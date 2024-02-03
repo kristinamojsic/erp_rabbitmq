@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class OrderService {
+public class OrderRestService {
     @Autowired
     private OrderRepository orderRepository;
     @GetMapping("/orders")

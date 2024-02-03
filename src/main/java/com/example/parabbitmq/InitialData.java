@@ -2,6 +2,9 @@ package com.example.parabbitmq;
 
 import com.example.parabbitmq.data.*;
 import com.example.parabbitmq.repositories.*;
+import com.example.parabbitmq.services.ProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,9 +15,9 @@ import java.util.List;
 
 @Configuration
 public class InitialData {
-
+    private static final Logger log = LoggerFactory.getLogger(InitialData.class);
     @Bean
-    public CommandLineRunner demo(ProductRepository productRepository, OrderRepository orderRepository, AccountingRepository accountingRepository, InvoiceRepository invoiceRepository, OrderProductRepository orderProductRepository)
+    public CommandLineRunner demo(ProductRepository productRepository, OrderRepository orderRepository, AccountingRepository accountingRepository, InvoiceRepository invoiceRepository, OrderProductRepository orderProductRepository, ProductService productService)
     {
 
         return(args -> {
@@ -38,6 +41,18 @@ public class InitialData {
             accountingRepository.save(accounting);
             Invoice invoice = new Invoice(accounting,LocalDate.now());
             invoiceRepository.save(invoice);
+//Informacije o
+//artiklima se na početku dobijaju iz servisa modula Roba, getAllProducts.
+            log.info("Svi artikli");
+            StringBuilder sb = new StringBuilder();
+            sb.append("All products:\n");
+            List<Product> products = productService.getAllProducts();
+            for(Product p : products)
+            {
+                sb.append(" ");
+                sb.append(p);
+            }
+            log.info(sb.toString());
 
 
         });

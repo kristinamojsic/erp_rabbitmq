@@ -12,6 +12,7 @@ public class Product implements Serializable {
     private String productName;
     private double purchasePrice;
     private String measureUnit;
+    //koliko je dostupno
     private int quantity = 0;
 
     public Product() {

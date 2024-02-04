@@ -27,9 +27,9 @@ public class InitialData {
             productRepository.save(product2);
             double pricePerUnit = product.getPurchasePrice()*1.2;
 
-            OrderProduct orderProduct = new OrderProduct(product,pricePerUnit,0.4,5,5*pricePerUnit+0.4);
+            OrderProduct orderProduct = new OrderProduct(product,pricePerUnit,0.4,5,5*(pricePerUnit+0.4));
             double pricePerUnit2 = product2.getPurchasePrice()*1.2;
-            OrderProduct orderProduct2 = new OrderProduct(product2,pricePerUnit2,0.4,4,4*pricePerUnit2+0.4);
+            OrderProduct orderProduct2 = new OrderProduct(product2,pricePerUnit2,0.4,4,4*(pricePerUnit2+0.4));
             orderProductRepository.save(orderProduct);
             orderProductRepository.save(orderProduct2);
             List<OrderProduct> productList = new ArrayList<>();

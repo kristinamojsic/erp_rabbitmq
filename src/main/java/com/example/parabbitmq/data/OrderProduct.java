@@ -9,10 +9,17 @@ public class OrderProduct {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+    //treba u okviru service-a da se izracuna, ne preko konstruktora
     private double pricePerUnit;
     private double pdv;
-    private int quantity;
     private double totalPrice;
+    //preko konstruktora
+    private int quantity;
+
+
 
     public OrderProduct(long id, Product product, double pricePerUnit, double pdv, int quantity, double totalPrice) {
         this.id = id;
@@ -21,6 +28,15 @@ public class OrderProduct {
         this.pdv = pdv;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
+    }
+
+    public OrderProduct(Order order,Product product, double pdv, int quantity) {
+        this.order = order;
+        this.product = product;
+        this.pdv = pdv;
+        this.quantity = quantity;
+        this.pricePerUnit = product.getPurchasePrice()*1.2;
+        this.totalPrice = (pricePerUnit + pdv) * quantity;
     }
 
     public OrderProduct() {
@@ -80,5 +96,13 @@ public class OrderProduct {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

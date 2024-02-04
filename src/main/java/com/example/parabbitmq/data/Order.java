@@ -2,11 +2,12 @@ package com.example.parabbitmq.data;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +15,7 @@ public class Order {
     private long customerId;
     private String customerName;
     //@Nullable
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderProduct> productList;
 
     public Order() {
@@ -61,5 +62,19 @@ public class Order {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public List<OrderProduct> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<OrderProduct> productList) {
+        this.productList = productList;
+    }
+
+    public Order addProduct(OrderProduct orderProduct)
+    {
+        this.productList.add(orderProduct);
+        return this;
     }
 }

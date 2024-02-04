@@ -30,27 +30,34 @@ public class ProductService {
     public Product addProduct(Product product)
     {
         productRepository.save(product);
+        ProductEvent productEvent = ProductEvent.createNewProduct(product);
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.PRODUCTS_TOPIC_EXCHANGE_NAME,
-                "products.events.create", ProductEvent.createNewProduct(product));
+                "products.events.create",productEvent);
         return product;
     }
 
     public Product updateProductState(long productId,int quantity)
     {
         Product product = productRepository.findById(productId).get();
+
         product.setQuantity(quantity);
         productRepository.save(product);
+        ProductEvent productEvent = ProductEvent.updateStateOfProduct(product);
+
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.PRODUCTS_TOPIC_EXCHANGE_NAME,
-                "products.events.updateState", ProductEvent.updateStateOfProduct(product));
+                "products.events.updateState",productEvent);
         return product;
     }
-    public Product updateProductPrice(long productId,double price)
+    public Product updateProductPrice(long productId,double price) throws Exception
     {
         Product product = productRepository.findById(productId).get();
+
         product.setPurchasePrice(price);
         productRepository.save(product);
+
+        ProductEvent productEvent = ProductEvent.updatePriceOfProduct(product);
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.PRODUCTS_TOPIC_EXCHANGE_NAME,
-                "products.events.updatePrice", ProductEvent.updateStateOfProduct(product));
+                "products.events.updatePrice",productEvent);
         return product;
     }
 

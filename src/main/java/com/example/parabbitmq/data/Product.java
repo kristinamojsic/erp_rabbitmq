@@ -1,8 +1,11 @@
 package com.example.parabbitmq.data;
 
 import jakarta.persistence.*;
+
+import java.io.Serializable;
+
 @Entity
-public class Product {
+public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

@@ -7,6 +7,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.example.parabbitmq.RabbitMQConfigurator.RESERVATION_QUEUE;
 
 @Component
@@ -16,25 +19,30 @@ public class ReservationListener {
     @RabbitListener(queues = RESERVATION_QUEUE)
     public void processReservation(ReservationMessage reservationMessage) {
         //System.out.println("Provera");
+        List<Product> productsForReservation = new ArrayList<>();
         for(OrderProduct orderProduct : reservationMessage.getProductList())
         {
             Product product = orderProduct.getProduct();
             int quantity = product.getQuantity();
             int requestedQuantity = orderProduct.getQuantity();
-            System.out.println("quantity " + quantity + "requested quantity " + requestedQuantity);
             if(quantity<requestedQuantity)
             {
                 System.out.println("Nemoguca rezervacija");
-                //napisati poruku da je nemoguce rezervisati i prekinuti rezervaciju svih proizvoda iz liste
-                //kada modul prodaja primi ovu poruku otkazuje se predracun
+                //poslati poruku o neuspesnoj rezervaciji, odnosno kupovini
                 return;
             }
-            product.setQuantity(quantity-requestedQuantity);
-            productRepository.save(product);
-            System.out.println("Uspesna rezervacija proizvoda " + product.getProductName());
-        }
-        //ako uspe rezervacija svih proizvoda, salje se poruka o uspesnoj rezervaciji
-        //kada primi tu poruku, pravi fakturu...
+            else {
+                product.setQuantity(quantity-requestedQuantity);
+                productsForReservation.add(product);
+                System.out.println("Proizvoda " + product.getProductName() + " ima dovoljno na stanju");
 
+            }
+
+        }
+
+        for(Product product : productsForReservation) {
+            productRepository.save(product);
+        }
+        //poslati poruku o uspesnoj rezervaciji
     }
 }

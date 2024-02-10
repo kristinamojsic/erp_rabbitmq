@@ -39,7 +39,6 @@ public class OrderService {
         {
             orderProduct.setOrder(order);
             this.orderProductRepository.save(orderProduct);
-            System.out.println("Product je " + orderProduct.getProduct());
             totalPrice += orderProduct.getTotalPrice();
 
         }

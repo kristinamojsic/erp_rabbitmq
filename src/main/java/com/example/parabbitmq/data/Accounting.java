@@ -14,11 +14,14 @@ public class Accounting {
     private Order order;
     //java.util
     private LocalDate date;
+    private double totalPrice;
+    //potvrda?
     private short state = 0;
 
-    public Accounting(Order order, LocalDate date) {
+    public Accounting(Order order, LocalDate date,double totalPrice) {
         this.order = order;
         this.date = date;
+        this.totalPrice = totalPrice;
     }
 
     public Accounting(Order order, LocalDate date, short state) {
@@ -52,5 +55,13 @@ public class Accounting {
 
     public void setState(short state) {
         this.state = state;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

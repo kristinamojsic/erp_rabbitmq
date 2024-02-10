@@ -1,11 +1,19 @@
 package com.example.parabbitmq.services;
 
+import com.example.parabbitmq.RabbitMQConfigurator;
+import com.example.parabbitmq.data.Accounting;
 import com.example.parabbitmq.data.Order;
 import com.example.parabbitmq.data.OrderProduct;
+import com.example.parabbitmq.messaging.ReservationMessage;
 import com.example.parabbitmq.repositories.OrderProductRepository;
 import com.example.parabbitmq.repositories.OrderRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -13,22 +21,36 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private OrderProductRepository orderProductRepository;
-
+    @Autowired
+    RabbitTemplate rabbitTemplate;
     public OrderService(OrderRepository orderRepository,OrderProductRepository orderProductRepository) {
         this.orderRepository = orderRepository;
         this.orderProductRepository = orderProductRepository;
     }
-
-    public String addOrder(Order order)
+    @Transactional
+    public Order addOrder(Order order)
     {
-        //dodati logiku izvrsavanja narudzbine
+
         this.orderRepository.save(order);
-        for(OrderProduct orderProduct : order.getProductList())
+        double totalPrice = 0.0;
+        LocalDate dateOfPayment = LocalDate.now().plusDays(5);
+        List<OrderProduct> productList = order.getProductList();
+        for(OrderProduct orderProduct : productList)
         {
             orderProduct.setOrder(order);
             this.orderProductRepository.save(orderProduct);
+            System.out.println("Product je " + orderProduct.getProduct());
+            totalPrice += orderProduct.getTotalPrice();
 
         }
-        return "uspesno";
+
+        Accounting tmpAccounting = new Accounting(order,dateOfPayment,totalPrice);
+
+        ReservationMessage reservationMessage = new ReservationMessage(productList);
+        rabbitTemplate.convertAndSend(RabbitMQConfigurator.ORDERS_TOPIC_EXCHANGE_NAME,
+                "reservation.queue", reservationMessage);
+        //poruka rezervacija robe
+
+        return order;
     }
 }

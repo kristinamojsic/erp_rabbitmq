@@ -1,5 +1,6 @@
 package com.example.parabbitmq.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 @Entity
 public class OrderProduct {
@@ -11,6 +12,7 @@ public class OrderProduct {
     private Product product;
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonBackReference
     private Order order;
     //treba u okviru service-a da se izracuna, ne preko konstruktora
     private double pricePerUnit;

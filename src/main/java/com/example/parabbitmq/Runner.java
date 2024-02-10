@@ -1,6 +1,6 @@
 package com.example.parabbitmq;
 
-import com.example.parabbitmq.messaging.MessagingReportingService;
+import com.example.parabbitmq.messaging.ProductEventReportingService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 public class Runner implements CommandLineRunner {
 
     private final RabbitTemplate rabbitTemplate;
-    private final MessagingReportingService receiver;
+    private final ProductEventReportingService receiver;
 
-    public Runner(MessagingReportingService receiver, RabbitTemplate rabbitTemplate) {
+    public Runner(ProductEventReportingService receiver, RabbitTemplate rabbitTemplate) {
         this.receiver = receiver;
         this.rabbitTemplate = rabbitTemplate;
     }

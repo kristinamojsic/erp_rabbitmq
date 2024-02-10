@@ -37,7 +37,7 @@ public class InitialData {
             productList.add(orderProduct2);
             Order o = new Order(1,1,"kristina",productList);
             orderRepository.save(o);
-            Accounting accounting = new Accounting(o,LocalDate.now());
+            Accounting accounting = new Accounting(o,LocalDate.now(),orderProduct.getTotalPrice()+orderProduct2.getTotalPrice());
             accountingRepository.save(accounting);
             Invoice invoice = new Invoice(accounting,LocalDate.now());
             invoiceRepository.save(invoice);

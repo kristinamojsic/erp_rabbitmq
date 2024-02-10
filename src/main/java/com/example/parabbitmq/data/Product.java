@@ -82,12 +82,17 @@ public class Product implements Serializable {
         this.quantity = quantity;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
     public String toString() {
         return "Product{" +
                 "id=" + id +
                 ", productName='" + productName + '\'' +
                 ", purchasePrice=" + purchasePrice +
                 ", measureUnit='" + measureUnit + '\'' +
+                ", quantity=" + quantity +
                 '}';
     }
 }

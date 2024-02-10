@@ -23,7 +23,7 @@ public class OrderRestService {
     }
 
     @PostMapping("/orders/add")
-    public String addOrder(@RequestBody Order order)
+    public Order addOrder(@RequestBody Order order)
     {
         return orderService.addOrder(order);
     }

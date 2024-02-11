@@ -1,14 +1,13 @@
 package com.example.parabbitmq.services;
 
+import com.example.parabbitmq.data.Invoice;
 import com.example.parabbitmq.data.Order;
 import com.example.parabbitmq.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class OrderRestService {
@@ -26,5 +25,19 @@ public class OrderRestService {
     public Order addOrder(@RequestBody Order order)
     {
         return orderService.addOrder(order);
+    }
+
+    @PostMapping("/pay/{id}")
+    public Invoice addInvoice(@PathVariable long id, @RequestBody Map<String,Double> totalPrice)
+    {
+        try
+        {
+            return orderService.addInvoice(id, totalPrice.get("totalPrice"));
+        }catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
     }
 }

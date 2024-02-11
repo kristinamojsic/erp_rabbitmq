@@ -2,9 +2,12 @@ package com.example.parabbitmq.services;
 
 import com.example.parabbitmq.RabbitMQConfigurator;
 import com.example.parabbitmq.data.Accounting;
+import com.example.parabbitmq.data.Invoice;
 import com.example.parabbitmq.data.Order;
 import com.example.parabbitmq.data.OrderProduct;
 import com.example.parabbitmq.messaging.ReservationMessage;
+import com.example.parabbitmq.repositories.AccountingRepository;
+import com.example.parabbitmq.repositories.InvoiceRepository;
 import com.example.parabbitmq.repositories.OrderProductRepository;
 import com.example.parabbitmq.repositories.OrderRepository;
 import jakarta.transaction.Transactional;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -21,6 +25,10 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private OrderProductRepository orderProductRepository;
+    @Autowired
+    private AccountingRepository accountingRepository;
+    @Autowired
+    private InvoiceRepository invoiceRepository;
     @Autowired
     RabbitTemplate rabbitTemplate;
     public OrderService(OrderRepository orderRepository,OrderProductRepository orderProductRepository) {
@@ -30,7 +38,6 @@ public class OrderService {
     @Transactional
     public Order addOrder(Order order)
     {
-
         this.orderRepository.save(order);
         double totalPrice = 0.0;
         LocalDate dateOfPayment = LocalDate.now().plusDays(5);
@@ -40,16 +47,32 @@ public class OrderService {
             orderProduct.setOrder(order);
             this.orderProductRepository.save(orderProduct);
             totalPrice += orderProduct.getTotalPrice();
-
         }
-
         Accounting tmpAccounting = new Accounting(order,dateOfPayment,totalPrice);
-
         ReservationMessage reservationMessage = new ReservationMessage(productList,tmpAccounting);
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.ORDERS_TOPIC_EXCHANGE_NAME,
                 "reservation.queue", reservationMessage);
-        //poruka rezervacija robe
 
         return order;
+    }
+
+    public Invoice addInvoice(long accountingId,double totalPrice) throws Exception
+    {
+        Optional<Accounting> accountingOptional= accountingRepository.findById(accountingId);
+        try
+        {
+            Accounting accounting = accountingOptional.get();
+            accounting.setState((short) 1);
+            accountingRepository.save(accounting);
+            LocalDate payDate = LocalDate.now();
+            Invoice invoice = new Invoice(accounting,payDate);
+            invoiceRepository.save(invoice);
+
+            return invoice;
+        }catch(Exception e)
+        {
+            throw new Exception("non-existing accounting id");
+        }
+
     }
 }

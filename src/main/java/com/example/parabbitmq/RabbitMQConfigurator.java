@@ -25,6 +25,9 @@ public class RabbitMQConfigurator{
     public static final String PRODUCTS_SERVICE_QUEUE = "products-service-queue";
     public static final String RESERVATION_QUEUE = "reservation-queue";
     public static final String RESERVATION_RESPONSE_QUEUE = "reservation-response-queue";
+//poruka ponistavanje rezervacije - od modula prodaja ka robi
+    //poruka prodata roba - od modula prodaja ka robi
+
 
 //queues
     @Bean

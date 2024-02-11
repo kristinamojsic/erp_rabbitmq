@@ -4,22 +4,26 @@ import com.example.parabbitmq.data.OrderProduct;
 import com.example.parabbitmq.data.Product;
 import com.example.parabbitmq.repositories.ProductRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.parabbitmq.RabbitMQConfigurator.RESERVATION_QUEUE;
+import static com.example.parabbitmq.RabbitMQConfigurator.*;
 
 @Component
 public class ReservationListener {
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    RabbitTemplate rabbitTemplate;
     @RabbitListener(queues = RESERVATION_QUEUE)
     public void processReservation(ReservationMessage reservationMessage) {
         //System.out.println("Provera");
         List<Product> productsForReservation = new ArrayList<>();
+        ReservationResponse response = new ReservationResponse();
         for(OrderProduct orderProduct : reservationMessage.getProductList())
         {
             Product product = orderProduct.getProduct();
@@ -27,7 +31,11 @@ public class ReservationListener {
             int requestedQuantity = orderProduct.getQuantity();
             if(quantity<requestedQuantity)
             {
-                System.out.println("Nemoguca rezervacija");
+                //System.out.println("Nemoguca rezervacija");
+                response.setSuccessful(false);
+                response.setMessage("Nemoguca rezervacija proizvoda sa id-em " + product.getId());
+                rabbitTemplate.convertAndSend(ORDERS2_TOPIC_EXCHANGE_NAME,
+                        "reservation.response.queue", response);
                 //poslati poruku o neuspesnoj rezervaciji, odnosno kupovini
                 return;
             }
@@ -43,6 +51,10 @@ public class ReservationListener {
         for(Product product : productsForReservation) {
             productRepository.save(product);
         }
+        response.setSuccessful(false);
+        response.setMessage("Uspesna rezervacija");
+        rabbitTemplate.convertAndSend(ORDERS2_TOPIC_EXCHANGE_NAME,
+                "reservation.response.queue", response);
         //poslati poruku o uspesnoj rezervaciji
     }
 }

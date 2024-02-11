@@ -3,6 +3,7 @@ package com.example.parabbitmq;
 
 import com.example.parabbitmq.messaging.ProductEventReportingService;
 import com.example.parabbitmq.messaging.ReservationListener;
+import com.example.parabbitmq.messaging.ReservationResponseListener;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -20,12 +21,12 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfigurator{
     public static final String PRODUCTS_TOPIC_EXCHANGE_NAME = "products-events-exchange";
     public static final String ORDERS_TOPIC_EXCHANGE_NAME = "orders-events-exchange";
+    public static final String ORDERS2_TOPIC_EXCHANGE_NAME = "orders2-events-exchange";
     public static final String PRODUCTS_SERVICE_QUEUE = "products-service-queue";
     public static final String RESERVATION_QUEUE = "reservation-queue";
-    public static final String RESERVATION_FAILURE_QUEUE = "reservation-failure-queue";
-    public static final String INVOICE_CONFIRMATION_QUEUE = "invoice-confirmation-queue";
+    public static final String RESERVATION_RESPONSE_QUEUE = "reservation-response-queue";
 
-
+//queues
     @Bean
     Queue productQueue() {
         return new Queue(PRODUCTS_SERVICE_QUEUE, false);
@@ -35,13 +36,10 @@ public class RabbitMQConfigurator{
         return new Queue(RESERVATION_QUEUE, false);
     }
     @Bean
-    Queue reservationFailureQueue() {
-        return new Queue(RESERVATION_FAILURE_QUEUE, false);
+    Queue reservationResponseQueue() {
+        return new Queue(RESERVATION_RESPONSE_QUEUE, false);
     }
-    @Bean
-    Queue invoiceConfirmationQueue() {
-        return new Queue(INVOICE_CONFIRMATION_QUEUE, false);
-    }
+//exchanges
     @Bean
     TopicExchange productExchange() {
         return new TopicExchange(PRODUCTS_TOPIC_EXCHANGE_NAME);
@@ -50,7 +48,11 @@ public class RabbitMQConfigurator{
     TopicExchange ordersExchange() {
         return new TopicExchange(ORDERS_TOPIC_EXCHANGE_NAME);
     }
-
+    @Bean
+    TopicExchange orders2Exchange() {
+        return new TopicExchange(ORDERS2_TOPIC_EXCHANGE_NAME);
+    }
+//bindings
     @Bean
     Binding productBinding(Queue productQueue, TopicExchange productExchange) {
         return BindingBuilder.bind(productQueue).to(productExchange).with("products.events.#");
@@ -61,14 +63,10 @@ public class RabbitMQConfigurator{
     }
 
     @Bean
-    Binding reservationFailureBinding(Queue reservationFailureQueue, TopicExchange ordersExchange) {
-        return BindingBuilder.bind(reservationFailureQueue).to(ordersExchange).with("reservation.failure.#");
+    Binding reservationResponseBinding(Queue reservationResponseQueue, TopicExchange orders2Exchange) {
+        return BindingBuilder.bind(reservationResponseQueue).to(orders2Exchange).with("reservation.response.#");
     }
-
-    @Bean
-    Binding invoiceConfirmationBinding(Queue invoiceConfirmationQueue, TopicExchange ordersExchange) {
-        return BindingBuilder.bind(invoiceConfirmationQueue).to(ordersExchange).with("invoice.confirmation.#");
-    }
+//containers
     @Bean
     SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
                                              MessageListenerAdapter listenerAdapter) {
@@ -87,7 +85,16 @@ public class RabbitMQConfigurator{
         container.setMessageListener(reservationListenerAdapter);
         return container;
     }
-
+    @Bean
+    SimpleMessageListenerContainer reservationResponseListenerContainer(ConnectionFactory connectionFactory,
+                                                                MessageListenerAdapter reservationResponseListenerAdapter) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(RESERVATION_RESPONSE_QUEUE);
+        container.setMessageListener(reservationResponseListenerAdapter);
+        return container;
+    }
+//listener adapters
     @Bean
     MessageListenerAdapter listenerAdapter(ProductEventReportingService receiver, MessageConverter messageConverter) {
         MessageListenerAdapter adapter = new MessageListenerAdapter(receiver, "receiveMessage");
@@ -98,6 +105,13 @@ public class RabbitMQConfigurator{
     @Bean
     MessageListenerAdapter reservationListenerAdapter(ReservationListener reservationListener, MessageConverter messageConverter) {
         MessageListenerAdapter adapter = new MessageListenerAdapter(reservationListener, "processReservation");
+        adapter.setMessageConverter(messageConverter);
+        return adapter;
+    }
+
+    @Bean
+    MessageListenerAdapter reservationResponseListenerAdapter(ReservationResponseListener reservationResponseListener, MessageConverter messageConverter) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(reservationResponseListener, "processReservationResponse");
         adapter.setMessageConverter(messageConverter);
         return adapter;
     }

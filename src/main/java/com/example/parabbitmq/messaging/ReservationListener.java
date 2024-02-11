@@ -1,5 +1,6 @@
 package com.example.parabbitmq.messaging;
 
+import com.example.parabbitmq.data.Accounting;
 import com.example.parabbitmq.data.OrderProduct;
 import com.example.parabbitmq.data.Product;
 import com.example.parabbitmq.repositories.ProductRepository;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.parabbitmq.RabbitMQConfigurator.*;
-
+//modul roba
 @Component
 public class ReservationListener {
     @Autowired
@@ -24,6 +25,8 @@ public class ReservationListener {
         //System.out.println("Provera");
         List<Product> productsForReservation = new ArrayList<>();
         ReservationResponse response = new ReservationResponse();
+        Accounting accounting = reservationMessage.getAccounting();
+
         for(OrderProduct orderProduct : reservationMessage.getProductList())
         {
             Product product = orderProduct.getProduct();
@@ -34,6 +37,7 @@ public class ReservationListener {
                 //System.out.println("Nemoguca rezervacija");
                 response.setSuccessful(false);
                 response.setMessage("Nemoguca rezervacija proizvoda sa id-em " + product.getId());
+                //response.setAccounting(accounting);
                 rabbitTemplate.convertAndSend(ORDERS2_TOPIC_EXCHANGE_NAME,
                         "reservation.response.queue", response);
                 //poslati poruku o neuspesnoj rezervaciji, odnosno kupovini
@@ -51,8 +55,9 @@ public class ReservationListener {
         for(Product product : productsForReservation) {
             productRepository.save(product);
         }
-        response.setSuccessful(false);
+        response.setSuccessful(true);
         response.setMessage("Uspesna rezervacija");
+        response.setAccounting(accounting);
         rabbitTemplate.convertAndSend(ORDERS2_TOPIC_EXCHANGE_NAME,
                 "reservation.response.queue", response);
         //poslati poruku o uspesnoj rezervaciji

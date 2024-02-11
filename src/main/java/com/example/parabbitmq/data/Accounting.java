@@ -2,10 +2,11 @@ package com.example.parabbitmq.data;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
-public class Accounting {
+public class Accounting implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -63,5 +64,15 @@ public class Accounting {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String toString() {
+        return "Accounting{" +
+                "id=" + id +
+                ", order=" + order +
+                ", date=" + date +
+                ", totalPrice=" + totalPrice +
+                ", state=" + state +
+                '}';
     }
 }

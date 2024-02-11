@@ -45,7 +45,7 @@ public class OrderService {
 
         Accounting tmpAccounting = new Accounting(order,dateOfPayment,totalPrice);
 
-        ReservationMessage reservationMessage = new ReservationMessage(productList);
+        ReservationMessage reservationMessage = new ReservationMessage(productList,tmpAccounting);
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.ORDERS_TOPIC_EXCHANGE_NAME,
                 "reservation.queue", reservationMessage);
         //poruka rezervacija robe

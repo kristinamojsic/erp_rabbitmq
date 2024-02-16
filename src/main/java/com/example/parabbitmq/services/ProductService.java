@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -66,7 +67,32 @@ public class ProductService {
                 "products.events.updateState",productEvent);
 
     }
-    
+//getProductData koji zahteva šifru artikla kao ulazni parameter, a
+//vraća informacije o artiklu kao što su šifra artikla, naziv artikla, jedinica mere, ukupno stanje i listu nabavnih
+//cena po dobavljačima i datumima.
+
+    public String getProductData(long productId)
+    {
+        StringBuilder sb = new StringBuilder();
+        Optional<Product> product = productRepository.findById(productId);
+        sb.append("product");
+        sb.append(product.get());
+
+        //izuzeci
+        //ukupno stanje
+        Optional<Integer> quantity = warehouseRepository.findTotalQuantityByProductId(productId);
+        sb.append(quantity).append(quantity.get());
+        //lista nabavnih cena po dobavljacima i datumima
+        List<Warehouse> warehousePurchase = warehouseRepository.findPurchacePriceForProductId(productId);
+        for(Warehouse w : warehousePurchase)
+        {
+            sb.append("purchasePrice ").append(w.getProduct().getPurchasePrice())
+                    .append(", supplierId ").append(w.getSupplierId())
+                    .append(", date").append(w.getDate());
+        }
+        return sb.toString();
+
+    }
     /*public Product updateProductPrice(long productId,double price) throws Exception
     {
         Product product = productRepository.findById(productId).get();

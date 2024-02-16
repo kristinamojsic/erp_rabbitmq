@@ -3,63 +3,59 @@ package com.example.parabbitmq.messaging;
 import com.example.parabbitmq.data.Accounting;
 import com.example.parabbitmq.data.OrderProduct;
 import com.example.parabbitmq.data.Product;
-import com.example.parabbitmq.repositories.ProductRepository;
+import com.example.parabbitmq.data.Reservation;
+import com.example.parabbitmq.repositories.ReservationRepository;
+import com.example.parabbitmq.repositories.WarehouseRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
-import static com.example.parabbitmq.RabbitMQConfigurator.*;
+import static com.example.parabbitmq.RabbitMQConfigurator.ORDERS2_TOPIC_EXCHANGE_NAME;
+import static com.example.parabbitmq.RabbitMQConfigurator.RESERVATION_QUEUE;
 //modul roba
 @Component
 public class ReservationListener {
     @Autowired
-    ProductRepository productRepository;
+    ReservationRepository reservationRepository;
+    @Autowired
+    WarehouseRepository warehouseRepository;
     @Autowired
     RabbitTemplate rabbitTemplate;
     @RabbitListener(queues = RESERVATION_QUEUE)
     public void processReservation(ReservationMessage reservationMessage) {
         //System.out.println("Provera");
-        List<Product> productsForReservation = new ArrayList<>();
+        //List<Product> productsForReservation = new ArrayList<>();
         ReservationResponse response = new ReservationResponse();
         Accounting accounting = reservationMessage.getAccounting();
-
+        boolean successful = true;
         for(OrderProduct orderProduct : reservationMessage.getProductList())
         {
             Product product = orderProduct.getProduct();
-            int quantity = product.getQuantity();
+            Optional<Integer> quantity = warehouseRepository.findTotalQuantityByProductId(product.getId());
             int requestedQuantity = orderProduct.getQuantity();
-            if(quantity<requestedQuantity)
+            if(quantity.get()<requestedQuantity)
             {
-                //System.out.println("Nemoguca rezervacija");
+                successful = false;
                 response.setSuccessful(false);
                 response.setMessage("Nemoguca rezervacija proizvoda sa id-em " + product.getId());
-                //response.setAccounting(accounting);
                 rabbitTemplate.convertAndSend(ORDERS2_TOPIC_EXCHANGE_NAME,
                         "reservation.response.queue", response);
-                //poslati poruku o neuspesnoj rezervaciji, odnosno kupovini
-                return;
             }
-            else {
-                product.setQuantity(quantity-requestedQuantity);
-                productsForReservation.add(product);
-                System.out.println("Proizvoda " + product.getProductName() + " ima dovoljno na stanju");
-
+        }
+        if(successful)
+        {
+            for(OrderProduct product : reservationMessage.getProductList()) {
+                Reservation reservation = new Reservation(product.getProduct(),product.getQuantity());
+                reservationRepository.save(reservation);
             }
-
+            response.setSuccessful(true);
+            response.setMessage("Uspesna rezervacija");
+            response.setAccounting(accounting);
+            rabbitTemplate.convertAndSend(ORDERS2_TOPIC_EXCHANGE_NAME,
+                    "reservation.response.queue", response);
         }
-
-        for(Product product : productsForReservation) {
-            productRepository.save(product);
-        }
-        response.setSuccessful(true);
-        response.setMessage("Uspesna rezervacija");
-        response.setAccounting(accounting);
-        rabbitTemplate.convertAndSend(ORDERS2_TOPIC_EXCHANGE_NAME,
-                "reservation.response.queue", response);
-        //poslati poruku o uspesnoj rezervaciji
     }
 }

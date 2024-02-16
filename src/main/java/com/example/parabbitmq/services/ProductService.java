@@ -1,19 +1,29 @@
 package com.example.parabbitmq.services;
 
 import com.example.parabbitmq.RabbitMQConfigurator;
+import com.example.parabbitmq.data.ArticleWarehouse;
 import com.example.parabbitmq.data.Product;
+import com.example.parabbitmq.data.Warehouse;
 import com.example.parabbitmq.messaging.ProductEvent;
+import com.example.parabbitmq.repositories.ArticleWarehouseRepository;
 import com.example.parabbitmq.repositories.ProductRepository;
+import com.example.parabbitmq.repositories.WarehouseRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProductService {
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    WarehouseRepository warehouseRepository;
+    @Autowired
+    ArticleWarehouseRepository articleWarehouseRepository;
     @Autowired
     RabbitTemplate rabbitTemplate;
 
@@ -35,19 +45,28 @@ public class ProductService {
                 "products.events.create",productEvent);
         return product;
     }
-
-    /*public Product updateProductState(long productId,int quantity)
+//u tabeli informacije o tome koliko kog artikla je pristiglo u neko skladiste
+    public void receptionOfProducts(int supplierId, int warehouseId, int quantity, List<ArticleWarehouse> articles)
     {
-        Product product = productRepository.findById(productId).get();
+        LocalDate date = LocalDate.now();
+        List<Product> products = new ArrayList<>();
+        for(ArticleWarehouse article : articles)
+        {
+            products.add(article.getProduct());
+            if(articleWarehouseRepository.findById(article.getId())==null)
+            {
+                articleWarehouseRepository.save(article);
+            }
 
-        product.setQuantity(quantity);
-        productRepository.save(product);
-        ProductEvent productEvent = ProductEvent.updateStateOfProduct(product);
-
+            Warehouse warehouse = new Warehouse(warehouseId,article,quantity,supplierId,date);
+            warehouseRepository.save(warehouse);
+        }
+        ProductEvent productEvent = ProductEvent.updateStateOfProduct(products);
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.PRODUCTS_TOPIC_EXCHANGE_NAME,
                 "products.events.updateState",productEvent);
-        return product;
-    }*/
+
+    }
+    
     /*public Product updateProductPrice(long productId,double price) throws Exception
     {
         Product product = productRepository.findById(productId).get();

@@ -16,6 +16,7 @@ public class ArticleWarehouse {
     Product product;
     private double purchasePrice;
 
+
     public ArticleWarehouse() {
     }
 

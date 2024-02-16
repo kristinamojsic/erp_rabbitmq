@@ -1,6 +1,9 @@
 package com.example.parabbitmq.data;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
+
 //tabela u kojoj se cuva  datum, šifra
 //dobavljača i listu artikala koji su primljeni u neko skladište (magacin)
 @Entity
@@ -15,20 +18,23 @@ public class Warehouse {
     @JoinColumn(name = "article_id")
     private ArticleWarehouse product;
     private int quantity;
+    private LocalDate date;
 
-    public Warehouse(long id, int warehouseId, ArticleWarehouse product, int quantity, int supplierId) {
+    public Warehouse(long id, int warehouseId, ArticleWarehouse product, int quantity, int supplierId, LocalDate date) {
         this.id = id;
         this.warehouseId = warehouseId;
         this.product = product;
         this.quantity = quantity;
         this.supplierId = supplierId;
+        this.date = date;
     }
 
-    public Warehouse(int warehouseId, ArticleWarehouse product, int quantity,int supplierId) {
+    public Warehouse(int warehouseId, ArticleWarehouse product, int quantity, int supplierId, LocalDate date) {
         this.warehouseId = warehouseId;
         this.product = product;
         this.quantity = quantity;
         this.supplierId = supplierId;
+        this.date = date;
     }
 
     public Warehouse() {
@@ -72,5 +78,13 @@ public class Warehouse {
 
     public void setSupplierId(int supplierId) {
         this.supplierId = supplierId;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

@@ -36,7 +36,7 @@ public class ProductService {
         return product;
     }
 
-    public Product updateProductState(long productId,int quantity)
+    /*public Product updateProductState(long productId,int quantity)
     {
         Product product = productRepository.findById(productId).get();
 
@@ -47,8 +47,8 @@ public class ProductService {
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.PRODUCTS_TOPIC_EXCHANGE_NAME,
                 "products.events.updateState",productEvent);
         return product;
-    }
-    public Product updateProductPrice(long productId,double price) throws Exception
+    }*/
+    /*public Product updateProductPrice(long productId,double price) throws Exception
     {
         Product product = productRepository.findById(productId).get();
 
@@ -59,7 +59,7 @@ public class ProductService {
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.PRODUCTS_TOPIC_EXCHANGE_NAME,
                 "products.events.updatePrice",productEvent);
         return product;
-    }
+    }*/
 
 
 }

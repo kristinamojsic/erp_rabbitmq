@@ -37,14 +37,15 @@ public class OrderProduct {
         this.product = product;
         this.pdv = pdv;
         this.quantity = quantity;
-        this.pricePerUnit = product.getPurchasePrice()*1.2;
+        this.pricePerUnit = 35.5;
+        //this.pricePerUnit = product.getPurchasePrice()*1.2;
         this.totalPrice = (pricePerUnit + pdv) * quantity;
     }
 
     public OrderProduct() {
     }
 
-    public OrderProduct(Product product, double pricePerUnit, double pdv, int quantity, double totalPrice) {
+    public OrderProduct(Product product, double pdv, double pricePerUnit, int quantity, double totalPrice) {
         this.product = product;
         this.pricePerUnit = pricePerUnit;
         this.pdv = pdv;

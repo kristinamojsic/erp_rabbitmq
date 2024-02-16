@@ -3,10 +3,12 @@ package com.example.parabbitmq.services;
 import com.example.parabbitmq.data.Product;
 import com.example.parabbitmq.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class ProductRestService {
@@ -24,17 +26,17 @@ public class ProductRestService {
     {
         return productService.addProduct(product);
     }
-    @PutMapping("/product/{id}/updateState")
+    /*@PutMapping("/product/{id}/updateState")
     public Product updateState(@RequestBody Map<String, Integer> request, @PathVariable long id) throws Exception
     {
         return productService.updateProductState(id,request.get("quantity"));
-    }
+    }*/
 
-    @PutMapping("product/{id}/updatePrice")
+   /* @PutMapping("product/{id}/updatePrice")
     public Product updatePrice(@RequestBody Map<String, Double> request, @PathVariable long id) throws Exception
     {
         return productService.updateProductPrice(id,request.get("price"));
-    }
+    }*/
 
 
 }

@@ -1,16 +1,10 @@
 package com.example.parabbitmq.services;
 
 import com.example.parabbitmq.RabbitMQConfigurator;
-import com.example.parabbitmq.data.Accounting;
-import com.example.parabbitmq.data.Invoice;
-import com.example.parabbitmq.data.Order;
-import com.example.parabbitmq.data.OrderProduct;
+import com.example.parabbitmq.data.*;
 import com.example.parabbitmq.messaging.ReservationMessage;
 import com.example.parabbitmq.messaging.SoldProductsMessage;
-import com.example.parabbitmq.repositories.AccountingRepository;
-import com.example.parabbitmq.repositories.InvoiceRepository;
-import com.example.parabbitmq.repositories.OrderProductRepository;
-import com.example.parabbitmq.repositories.OrderRepository;
+import com.example.parabbitmq.repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +25,8 @@ public class OrderService {
     @Autowired
     private InvoiceRepository invoiceRepository;
     @Autowired
+    private WarehouseRepository warehouseRepository;
+    @Autowired
     RabbitTemplate rabbitTemplate;
     public OrderService(OrderRepository orderRepository,OrderProductRepository orderProductRepository) {
         this.orderRepository = orderRepository;
@@ -45,6 +41,17 @@ public class OrderService {
         List<OrderProduct> productList = order.getProductList();
         for(OrderProduct orderProduct : productList)
         {
+            int count = 0;
+            double purchasePrice = 0.0;
+            //pronaci o kom se proizvodu radi i uzeti njegovu purchase price i dodati nesto na to
+            for(Warehouse w : warehouseRepository.findPurchacePriceForProductId(orderProduct.getProduct().getId()))
+            {
+                ++count;
+                purchasePrice += w.getProduct().getPurchasePrice();
+            }
+            purchasePrice /= count;
+            orderProduct.setPricePerUnit(purchasePrice+(purchasePrice*0.2));
+            orderProduct.setTotalPrice((orderProduct.getPricePerUnit()+orderProduct.getPdv()*orderProduct.getQuantity()));
             orderProduct.setOrder(order);
             this.orderProductRepository.save(orderProduct);
             totalPrice += orderProduct.getTotalPrice();

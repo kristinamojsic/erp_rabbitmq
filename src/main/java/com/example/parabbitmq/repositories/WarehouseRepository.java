@@ -25,4 +25,9 @@ public interface WarehouseRepository extends JpaRepository<Warehouse,Long> {
 
     @Query("SELECT w FROM  Warehouse w WHERE w.product.product.id= :productId")
     List<Warehouse> findPurchacePriceForProductId(@Param("productId") Long productId);
+
+    @Query("SELECT w.warehouseId, SUM(w.quantity) FROM Warehouse w WHERE w.product.id = :productId GROUP BY w.warehouseId")
+    List<Object[]> findQuantityForProductIdGroupByWarehouse(@Param("productId") Long productId);
+
+
 }

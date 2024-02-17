@@ -97,6 +97,21 @@ public class ProductService {
         return sb.toString();
 
     }
+
+    //Treba realizovati i servis getProductState sa šifrom artikla kao ulaznim
+    //parametrom koji vraća stanje artikla po magacinima.
+
+    public String getProductState(long productId)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Warehouse id | quantity\n");
+        List<Object[]> result = warehouseRepository.findQuantityForProductIdGroupByWarehouse(productId);
+        for(Object[] o : result)
+        {
+            sb.append(o[0]).append(" | ").append(o[1]).append("\n");
+        }
+        return sb.toString();
+    }
     /*public Product updateProductPrice(long productId,double price) throws Exception
     {
         Product product = productRepository.findById(productId).get();

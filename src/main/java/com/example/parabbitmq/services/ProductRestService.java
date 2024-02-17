@@ -25,7 +25,11 @@ public class ProductRestService {
     {
         return productService.getProductData(productId);
     }
-
+    @GetMapping("/productState/{productId}")
+    public String getProductState(@PathVariable("productId") long productId)
+    {
+        return productService.getProductState(productId);
+    }
     @PostMapping("/product/add")
     public Product addProduct(@RequestBody Product product)
     {

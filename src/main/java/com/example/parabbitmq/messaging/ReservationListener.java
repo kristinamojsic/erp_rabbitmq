@@ -26,7 +26,7 @@ public class ReservationListener {
     RabbitTemplate rabbitTemplate;
     @RabbitListener(queues = RESERVATION_QUEUE)
     public void processReservation(ReservationMessage reservationMessage) {
-        //System.out.println("Provera");
+        System.out.println("Provera");
         //List<Product> productsForReservation = new ArrayList<>();
         ReservationResponse response = new ReservationResponse();
         Accounting accounting = reservationMessage.getAccounting();
@@ -36,7 +36,7 @@ public class ReservationListener {
             Product product = orderProduct.getProduct();
             Optional<Integer> quantity = warehouseRepository.findTotalQuantityByProductId(product.getId());
             Optional<Integer> reservedQuantity = reservationRepository.findTotalReservedQuantityByProductId(product.getId());
-            int totalQauntity = reservedQuantity.get()!=null ? quantity.get() - reservedQuantity.get() : quantity.get();
+            int totalQauntity = reservedQuantity.isPresent() ? quantity.get() - reservedQuantity.get() : quantity.get();
             int requestedQuantity = orderProduct.getQuantity();
             if(totalQauntity<requestedQuantity)
             {

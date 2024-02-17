@@ -62,8 +62,9 @@ public class InitialData {
             log.info(sb.toString());*/
             /*log.info("rezervacije za neki proizvod");
             Optional<Integer> quantity = reservationRepository.findTotalReservedQuantityByProductId((long) 1);
-            log.info(String.valueOf(quantity.get()));*/
-
+            log.info(String.valueOf(quantity));
+            log.info(String.valueOf(quantity.get()));
+*/
 
         });
     }

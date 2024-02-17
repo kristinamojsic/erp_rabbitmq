@@ -2,8 +2,10 @@ package com.example.parabbitmq.data;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
-public class Reservation {
+public class Reservation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

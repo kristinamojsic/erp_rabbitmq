@@ -18,4 +18,7 @@ public class SoldProductsMessage implements Serializable {
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
     }
+
+    public SoldProductsMessage() {
+    }
 }

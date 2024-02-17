@@ -2,8 +2,11 @@ package com.example.parabbitmq.data;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
+import java.io.Serializable;
+
 @Entity
-public class OrderProduct {
+public class OrderProduct implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

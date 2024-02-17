@@ -87,7 +87,7 @@ public class ProductService {
         int totalQauntity = reservedQuantity.get()!=null ? quantity.get() - reservedQuantity.get() : quantity.get();
         sb.append("total quantity: ").append(totalQauntity).append("\n");
         //lista nabavnih cena po dobavljacima i datumima
-        List<Warehouse> warehousePurchase = warehouseRepository.findPurchacePriceForProductId(productId);
+        List<Warehouse> warehousePurchase = warehouseRepository.findStateOfWarehousesForProductId(productId);
         for(Warehouse w : warehousePurchase)
         {
             sb.append("purchasePrice ").append(w.getProduct().getPurchasePrice())

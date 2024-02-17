@@ -44,7 +44,7 @@ public class OrderService {
             int count = 0;
             double purchasePrice = 0.0;
             //pronaci o kom se proizvodu radi i uzeti njegovu purchase price i dodati nesto na to
-            for(Warehouse w : warehouseRepository.findPurchacePriceForProductId(orderProduct.getProduct().getId()))
+            for(Warehouse w : warehouseRepository.findStateOfWarehousesForProductId(orderProduct.getProduct().getId()))
             {
                 ++count;
                 purchasePrice += w.getProduct().getPurchasePrice();

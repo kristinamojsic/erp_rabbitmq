@@ -22,4 +22,8 @@ public interface ReservationRepository extends JpaRepository <Reservation,Long>{
 
     @Query("SELECT SUM(r.quantity) FROM Reservation r WHERE r.product.id = :productId")
     Optional<Integer> findTotalReservedQuantityByProductId(@Param("productId") Long productId);
+
+    //naci odredjenu rezervaciju u zavisnosti od proizvoda i kolicine
+    @Query("SELECT r.id FROM Reservation r WHERE r.product.id = :productId AND r.quantity = :quantity")
+    Optional<Long> findReservationId(@Param("productId") long productId, @Param("quantity") int quantity);
 }

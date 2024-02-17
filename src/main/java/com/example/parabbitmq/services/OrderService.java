@@ -6,6 +6,7 @@ import com.example.parabbitmq.data.Invoice;
 import com.example.parabbitmq.data.Order;
 import com.example.parabbitmq.data.OrderProduct;
 import com.example.parabbitmq.messaging.ReservationMessage;
+import com.example.parabbitmq.messaging.SoldProductsMessage;
 import com.example.parabbitmq.repositories.AccountingRepository;
 import com.example.parabbitmq.repositories.InvoiceRepository;
 import com.example.parabbitmq.repositories.OrderProductRepository;
@@ -67,7 +68,10 @@ public class OrderService {
             LocalDate payDate = LocalDate.now();
             Invoice invoice = new Invoice(accounting,payDate);
             invoiceRepository.save(invoice);
-
+            //poslati poruku prodata roba
+            SoldProductsMessage soldProductsMessage = new SoldProductsMessage(invoice);
+            rabbitTemplate.convertAndSend(RabbitMQConfigurator.SOLD_TOPIC_EXCHANGE_NAME,
+                    "soldproducts.queue",soldProductsMessage);
             return invoice;
         }catch(Exception e)
         {

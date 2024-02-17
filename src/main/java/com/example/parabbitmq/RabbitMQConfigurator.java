@@ -4,6 +4,7 @@ package com.example.parabbitmq;
 import com.example.parabbitmq.messaging.ProductEventReportingService;
 import com.example.parabbitmq.messaging.ReservationListener;
 import com.example.parabbitmq.messaging.ReservationResponseListener;
+import com.example.parabbitmq.messaging.SoldProductsListener;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -25,6 +26,8 @@ public class RabbitMQConfigurator{
     public static final String PRODUCTS_SERVICE_QUEUE = "products-service-queue";
     public static final String RESERVATION_QUEUE = "reservation-queue";
     public static final String RESERVATION_RESPONSE_QUEUE = "reservation-response-queue";
+    public static final String SOLD_TOPIC_EXCHANGE_NAME = "sold-events-exchange";
+    public static final String SOLDPRODUCTS_SERVICE_QUEUE = "soldproducts-service-queue";
 //poruka ponistavanje rezervacije - od modula prodaja ka robi
     //poruka prodata roba - od modula prodaja ka robi
 
@@ -42,6 +45,10 @@ public class RabbitMQConfigurator{
     Queue reservationResponseQueue() {
         return new Queue(RESERVATION_RESPONSE_QUEUE, false);
     }
+    @Bean
+    Queue soldProductsQueue() {
+        return new Queue(SOLDPRODUCTS_SERVICE_QUEUE, false);
+    }
 //exchanges
     @Bean
     TopicExchange productExchange() {
@@ -54,6 +61,10 @@ public class RabbitMQConfigurator{
     @Bean
     TopicExchange orders2Exchange() {
         return new TopicExchange(ORDERS2_TOPIC_EXCHANGE_NAME);
+    }
+    @Bean
+    TopicExchange soldProductsExchange() {
+        return new TopicExchange(SOLD_TOPIC_EXCHANGE_NAME);
     }
 //bindings
     @Bean
@@ -68,6 +79,11 @@ public class RabbitMQConfigurator{
     @Bean
     Binding reservationResponseBinding(Queue reservationResponseQueue, TopicExchange orders2Exchange) {
         return BindingBuilder.bind(reservationResponseQueue).to(orders2Exchange).with("reservation.response.#");
+    }
+
+    @Bean
+    Binding soldProductsBinding(Queue soldProductsQueue, TopicExchange soldProductsExchange) {
+        return BindingBuilder.bind(soldProductsQueue).to(soldProductsExchange).with("soldproducts.#");
     }
 //containers
     @Bean
@@ -97,6 +113,15 @@ public class RabbitMQConfigurator{
         container.setMessageListener(reservationResponseListenerAdapter);
         return container;
     }
+    @Bean
+    SimpleMessageListenerContainer soldProductsListenerContainer(ConnectionFactory connectionFactory,
+                                                                        MessageListenerAdapter soldProductsListenerAdapter) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(SOLDPRODUCTS_SERVICE_QUEUE);
+        container.setMessageListener(soldProductsListenerAdapter);
+        return container;
+    }
 //listener adapters
     @Bean
     MessageListenerAdapter listenerAdapter(ProductEventReportingService receiver, MessageConverter messageConverter) {
@@ -118,7 +143,12 @@ public class RabbitMQConfigurator{
         adapter.setMessageConverter(messageConverter);
         return adapter;
     }
-
+    @Bean
+    MessageListenerAdapter soldProductsListenerAdapter(SoldProductsListener soldProductsListener, MessageConverter messageConverter) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(soldProductsListener, "processSoldProductsMessage");
+        adapter.setMessageConverter(messageConverter);
+        return adapter;
+    }
     @Bean
     public MessageConverter jsonToMapMessageConverter() {
         DefaultClassMapper defaultClassMapper = new DefaultClassMapper();

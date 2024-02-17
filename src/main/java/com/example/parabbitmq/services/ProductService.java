@@ -7,6 +7,7 @@ import com.example.parabbitmq.data.Warehouse;
 import com.example.parabbitmq.messaging.ProductEvent;
 import com.example.parabbitmq.repositories.ArticleWarehouseRepository;
 import com.example.parabbitmq.repositories.ProductRepository;
+import com.example.parabbitmq.repositories.ReservationRepository;
 import com.example.parabbitmq.repositories.WarehouseRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class ProductService {
     ProductRepository productRepository;
     @Autowired
     WarehouseRepository warehouseRepository;
+    @Autowired
+    ReservationRepository reservationRepository;
     @Autowired
     ArticleWarehouseRepository articleWarehouseRepository;
     @Autowired
@@ -75,20 +78,21 @@ public class ProductService {
     {
         StringBuilder sb = new StringBuilder();
         Optional<Product> product = productRepository.findById(productId);
-        sb.append("product");
-        sb.append(product.get());
+        sb.append("product\n").append(product.get()).append("\n");
 
         //izuzeci
         //ukupno stanje
         Optional<Integer> quantity = warehouseRepository.findTotalQuantityByProductId(productId);
-        sb.append(quantity).append(quantity.get());
+        Optional<Integer> reservedQuantity = reservationRepository.findTotalReservedQuantityByProductId(productId);
+        int totalQauntity = reservedQuantity.get()!=null ? quantity.get() - reservedQuantity.get() : quantity.get();
+        sb.append("total quantity: ").append(totalQauntity).append("\n");
         //lista nabavnih cena po dobavljacima i datumima
         List<Warehouse> warehousePurchase = warehouseRepository.findPurchacePriceForProductId(productId);
         for(Warehouse w : warehousePurchase)
         {
             sb.append("purchasePrice ").append(w.getProduct().getPurchasePrice())
                     .append(", supplierId ").append(w.getSupplierId())
-                    .append(", date").append(w.getDate());
+                    .append(", date").append(w.getDate()).append("\n");
         }
         return sb.toString();
 

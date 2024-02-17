@@ -37,6 +37,13 @@ public class Warehouse {
         this.date = date;
     }
 
+    public Warehouse(int warehouseId, int supplierId, ArticleWarehouse product, int quantity) {
+        this.warehouseId = warehouseId;
+        this.supplierId = supplierId;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
     public Warehouse() {
     }
 

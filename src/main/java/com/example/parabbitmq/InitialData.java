@@ -17,7 +17,7 @@ import java.util.List;
 public class InitialData {
     private static final Logger log = LoggerFactory.getLogger(InitialData.class);
     @Bean
-    public CommandLineRunner demo(ProductRepository productRepository, OrderRepository orderRepository, AccountingRepository accountingRepository, InvoiceRepository invoiceRepository, OrderProductRepository orderProductRepository, ProductService productService,ArticleWarehouseRepository articleWarehouseRepository,WarehouseRepository warehouseRepository)
+    public CommandLineRunner demo(ProductRepository productRepository, OrderRepository orderRepository, AccountingRepository accountingRepository, InvoiceRepository invoiceRepository, OrderProductRepository orderProductRepository, ProductService productService,ArticleWarehouseRepository articleWarehouseRepository,WarehouseRepository warehouseRepository, ReservationRepository reservationRepository)
     {
 
         return(args -> {
@@ -30,8 +30,8 @@ public class InitialData {
             ArticleWarehouse articleWarehouse1 = new ArticleWarehouse(product2,35.5);
             articleWarehouseRepository.save(articleWarehouse);
             articleWarehouseRepository.save(articleWarehouse1);
-            Warehouse warehouse = new Warehouse(1,articleWarehouse,5,1);
-            Warehouse warehouse1 = new Warehouse(1,articleWarehouse1,5,1);
+            Warehouse warehouse = new Warehouse(1,1,articleWarehouse,5);
+            Warehouse warehouse1 = new Warehouse(1,1,articleWarehouse1,5);
             warehouseRepository.save(warehouse);
             warehouseRepository.save(warehouse1);
             OrderProduct orderProduct = new OrderProduct(product,35.0,0.4,5,5*(35.0+0.4));
@@ -50,7 +50,7 @@ public class InitialData {
             invoiceRepository.save(invoice);
 //Informacije o
 //artiklima se na početku dobijaju iz servisa modula Roba, getAllProducts.
-            log.info("Svi artikli");
+            /*log.info("Svi artikli");
             StringBuilder sb = new StringBuilder();
             sb.append("All products:\n");
             List<Product> products = productService.getAllProducts();
@@ -59,7 +59,10 @@ public class InitialData {
                 sb.append(" ");
                 sb.append(p);
             }
-            log.info(sb.toString());
+            log.info(sb.toString());*/
+            /*log.info("rezervacije za neki proizvod");
+            Optional<Integer> quantity = reservationRepository.findTotalReservedQuantityByProductId((long) 1);
+            log.info(String.valueOf(quantity.get()));*/
 
 
         });

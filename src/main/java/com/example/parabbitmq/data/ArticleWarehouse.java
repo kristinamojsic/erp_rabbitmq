@@ -2,10 +2,12 @@ package com.example.parabbitmq.data;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 
 @Entity
 @Table(name = "articleWarehouse")
-public class ArticleWarehouse {
+public class ArticleWarehouse implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,7 +14,7 @@ public class OrderProduct {
     @JoinColumn(name = "order_id")
     @JsonBackReference
     private Order order;
-    //treba u okviru service-a da se izracuna, ne preko konstruktora
+
     private double pricePerUnit;
     private double pdv;
     private double totalPrice;

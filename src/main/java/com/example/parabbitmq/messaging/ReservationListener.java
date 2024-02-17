@@ -35,8 +35,10 @@ public class ReservationListener {
         {
             Product product = orderProduct.getProduct();
             Optional<Integer> quantity = warehouseRepository.findTotalQuantityByProductId(product.getId());
+            Optional<Integer> reservedQuantity = reservationRepository.findTotalReservedQuantityByProductId(product.getId());
+            int totalQauntity = reservedQuantity.get()!=null ? quantity.get() - reservedQuantity.get() : quantity.get();
             int requestedQuantity = orderProduct.getQuantity();
-            if(quantity.get()<requestedQuantity)
+            if(totalQauntity<requestedQuantity)
             {
                 successful = false;
                 response.setSuccessful(false);

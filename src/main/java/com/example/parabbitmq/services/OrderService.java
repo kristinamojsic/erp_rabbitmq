@@ -43,7 +43,6 @@ public class OrderService {
         {
             int count = 0;
             double purchasePrice = 0.0;
-            //pronaci o kom se proizvodu radi i uzeti njegovu purchase price i dodati nesto na to
             for(Warehouse w : warehouseRepository.findStateOfWarehousesForProductId(orderProduct.getProduct().getId()))
             {
                 ++count;
@@ -70,6 +69,7 @@ public class OrderService {
         try
         {
             Accounting accounting = accountingOptional.get();
+            if(accounting.getState()==1) throw new Exception("Order already paid");
             accounting.setState((short) 1);
             accountingRepository.save(accounting);
             LocalDate payDate = LocalDate.now();

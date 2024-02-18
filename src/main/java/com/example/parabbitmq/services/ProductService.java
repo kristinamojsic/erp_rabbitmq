@@ -57,17 +57,12 @@ public class ProductService {
         for(ArticleWarehouse article : articles)
         {
             products.add(article.getProduct());
-            if(articleWarehouseRepository.findById(article.getId())==null)
-            {
-                articleWarehouseRepository.save(article);
-            }
-
             Warehouse warehouse = new Warehouse(warehouseId,article,quantity,supplierId,date);
             warehouseRepository.save(warehouse);
         }
         ProductEvent productEvent = ProductEvent.updateStateOfProduct(products);
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.PRODUCTS_TOPIC_EXCHANGE_NAME,
-                "products.events.updateState",productEvent);
+               "products.events.updateState",productEvent);
 
     }
 //getProductData koji zahteva šifru artikla kao ulazni parameter, a
@@ -84,7 +79,7 @@ public class ProductService {
         //ukupno stanje
         Optional<Integer> quantity = warehouseRepository.findTotalQuantityByProductId(productId);
         Optional<Integer> reservedQuantity = reservationRepository.findTotalReservedQuantityByProductId(productId);
-        int totalQauntity = reservedQuantity.get()!=null ? quantity.get() - reservedQuantity.get() : quantity.get();
+        int totalQauntity = reservedQuantity.isPresent() ? quantity.get() - reservedQuantity.get() : quantity.get();
         sb.append("total quantity: ").append(totalQauntity).append("\n");
         //lista nabavnih cena po dobavljacima i datumima
         List<Warehouse> warehousePurchase = warehouseRepository.findStateOfWarehousesForProductId(productId);

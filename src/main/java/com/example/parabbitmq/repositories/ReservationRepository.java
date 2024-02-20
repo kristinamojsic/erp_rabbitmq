@@ -26,4 +26,9 @@ public interface ReservationRepository extends JpaRepository <Reservation,Long>{
     //naci odredjenu rezervaciju u zavisnosti od proizvoda i kolicine
     @Query("SELECT r.id FROM Reservation r WHERE r.product.id = :productId AND r.quantity = :quantity")
     Optional<Long> findReservationId(@Param("productId") long productId, @Param("quantity") int quantity);
+
+    //naci rezervacije koje se odnose na odredjenu narudzbinu
+
+    @Query("SELECT r.id FROM Reservation r WHERE r.order.id = :orderId")
+    List<Reservation> findReservationsByOrderId(@Param("orderId") long orderId);
 }

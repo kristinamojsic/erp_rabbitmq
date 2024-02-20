@@ -2,6 +2,7 @@ package com.example.parabbitmq;
 
 import com.example.parabbitmq.data.*;
 import com.example.parabbitmq.repositories.*;
+import com.example.parabbitmq.services.OrderService;
 import com.example.parabbitmq.services.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import java.util.List;
 public class InitialData {
     private static final Logger log = LoggerFactory.getLogger(InitialData.class);
     @Bean
-    public CommandLineRunner demo(ProductRepository productRepository, OrderRepository orderRepository, AccountingRepository accountingRepository, InvoiceRepository invoiceRepository, OrderProductRepository orderProductRepository, ProductService productService,ArticleWarehouseRepository articleWarehouseRepository,WarehouseRepository warehouseRepository, ReservationRepository reservationRepository)
+    public CommandLineRunner demo(ProductRepository productRepository, OrderRepository orderRepository, AccountingRepository accountingRepository, InvoiceRepository invoiceRepository, OrderProductRepository orderProductRepository, ProductService productService, ArticleWarehouseRepository articleWarehouseRepository, WarehouseRepository warehouseRepository, ReservationRepository reservationRepository, OrderService orderService)
     {
 
         return(args -> {
@@ -48,6 +49,8 @@ public class InitialData {
             accountingRepository.save(accounting);
             Invoice invoice = new Invoice(accounting,LocalDate.now());
             invoiceRepository.save(invoice);
+
+            orderService.checkAccountings();
 //Informacije o
 //artiklima se na početku dobijaju iz servisa modula Roba, getAllProducts.
             /*log.info("Svi artikli");

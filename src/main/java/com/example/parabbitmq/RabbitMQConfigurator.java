@@ -1,10 +1,7 @@
 package com.example.parabbitmq;
 
 
-import com.example.parabbitmq.messaging.ProductEventReportingService;
-import com.example.parabbitmq.messaging.ReservationListener;
-import com.example.parabbitmq.messaging.ReservationResponseListener;
-import com.example.parabbitmq.messaging.SoldProductsListener;
+import com.example.parabbitmq.messaging.*;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -23,10 +20,12 @@ public class RabbitMQConfigurator{
     public static final String PRODUCTS_TOPIC_EXCHANGE_NAME = "products-events-exchange";
     public static final String ORDERS_TOPIC_EXCHANGE_NAME = "orders-events-exchange";
     public static final String ORDERS2_TOPIC_EXCHANGE_NAME = "orders2-events-exchange";
+    public static final String SOLD_TOPIC_EXCHANGE_NAME = "sold-events-exchange";
+    public static final String CANCELRESERVATION_TOPIC_EXCHANGE_NAME = "cancel-reservation-exchange";
     public static final String PRODUCTS_SERVICE_QUEUE = "products-service-queue";
     public static final String RESERVATION_QUEUE = "reservation-queue";
     public static final String RESERVATION_RESPONSE_QUEUE = "reservation-response-queue";
-    public static final String SOLD_TOPIC_EXCHANGE_NAME = "sold-events-exchange";
+    public static final String CANCEL_RESERVATION_QUEUE = "cancelreservation-queue";
     public static final String SOLDPRODUCTS_SERVICE_QUEUE = "soldproducts-service-queue";
 //poruka ponistavanje rezervacije - od modula prodaja ka robi
     //poruka prodata roba - od modula prodaja ka robi
@@ -49,6 +48,10 @@ public class RabbitMQConfigurator{
     Queue soldProductsQueue() {
         return new Queue(SOLDPRODUCTS_SERVICE_QUEUE, false);
     }
+    @Bean
+    Queue cancelReservationQueue() {
+        return new Queue(CANCEL_RESERVATION_QUEUE, false);
+    }
 //exchanges
     @Bean
     TopicExchange productExchange() {
@@ -65,6 +68,10 @@ public class RabbitMQConfigurator{
     @Bean
     TopicExchange soldProductsExchange() {
         return new TopicExchange(SOLD_TOPIC_EXCHANGE_NAME);
+    }
+    @Bean
+    TopicExchange cancelReservationExchange() {
+        return new TopicExchange(CANCELRESERVATION_TOPIC_EXCHANGE_NAME);
     }
 //bindings
     //"products.events.#" routing key
@@ -85,6 +92,10 @@ public class RabbitMQConfigurator{
     @Bean
     Binding soldProductsBinding(Queue soldProductsQueue, TopicExchange soldProductsExchange) {
         return BindingBuilder.bind(soldProductsQueue).to(soldProductsExchange).with("soldproducts.#");
+    }
+    @Bean
+    Binding cancelReservationBinding(Queue cancelReservationQueue, TopicExchange cancelReservationExchange) {
+        return BindingBuilder.bind(cancelReservationQueue).to(cancelReservationExchange).with("cancelreservation.#");
     }
 //containers
     @Bean
@@ -123,6 +134,15 @@ public class RabbitMQConfigurator{
         container.setMessageListener(soldProductsListenerAdapter);
         return container;
     }
+    @Bean
+    SimpleMessageListenerContainer cancelReservationListenerContainer(ConnectionFactory connectionFactory,
+                                                                 MessageListenerAdapter cancelReservationListenerAdapter) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(CANCEL_RESERVATION_QUEUE);
+        container.setMessageListener(cancelReservationListenerAdapter);
+        return container;
+    }
 //listener adapters
     @Bean
     MessageListenerAdapter listenerAdapter(ProductEventReportingService receiver, MessageConverter messageConverter) {
@@ -150,6 +170,14 @@ public class RabbitMQConfigurator{
         adapter.setMessageConverter(messageConverter);
         return adapter;
     }
+    @Bean
+    MessageListenerAdapter cancelReservationListenerAdapter(CancelReservationListener cancelReservationListener, MessageConverter messageConverter) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(cancelReservationListener, "cancelReservation");
+        adapter.setMessageConverter(messageConverter);
+        return adapter;
+    }
+
+
     @Bean
     public MessageConverter jsonToMapMessageConverter() {
         DefaultClassMapper defaultClassMapper = new DefaultClassMapper();

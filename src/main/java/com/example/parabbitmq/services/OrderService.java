@@ -2,6 +2,7 @@ package com.example.parabbitmq.services;
 
 import com.example.parabbitmq.RabbitMQConfigurator;
 import com.example.parabbitmq.data.*;
+import com.example.parabbitmq.messaging.ReservationCancellation;
 import com.example.parabbitmq.messaging.ReservationMessage;
 import com.example.parabbitmq.messaging.SoldProductsMessage;
 import com.example.parabbitmq.repositories.*;
@@ -80,10 +81,25 @@ public class OrderService {
             rabbitTemplate.convertAndSend(RabbitMQConfigurator.SOLD_TOPIC_EXCHANGE_NAME,
                     "soldproducts.queue",soldProductsMessage);
             return invoice;
-        }catch(Exception e)
-        {
+        }catch(Exception e) {
             throw new Exception("non-existing accounting id");
         }
 
+    }
+
+    public void checkAccountings() {
+        LocalDate date = LocalDate.now();
+        List<Accounting> accountings = accountingRepository.deadlinePassed(date);
+        if(!accountings.isEmpty()){
+            for(Accounting accounting : accountings){
+                accounting.setState((short) 2);
+                accountingRepository.save(accounting);
+                long orderId = accounting.getOrder().getId();
+                ReservationCancellation reservationCancellation = new ReservationCancellation(orderId);
+                rabbitTemplate.convertAndSend(RabbitMQConfigurator.CANCELRESERVATION_TOPIC_EXCHANGE_NAME,
+                        "cancelreservation.queue",reservationCancellation);
+
+            }
+        }
     }
 }

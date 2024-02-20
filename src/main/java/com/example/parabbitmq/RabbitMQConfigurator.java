@@ -1,7 +1,11 @@
 package com.example.parabbitmq;
 
 
-import com.example.parabbitmq.messaging.*;
+import com.example.parabbitmq.prodaja.listeners.ProductEventReportingService;
+import com.example.parabbitmq.prodaja.listeners.ReservationResponseListener;
+import com.example.parabbitmq.roba.listeners.CancelReservationListener;
+import com.example.parabbitmq.roba.listeners.ReservationListener;
+import com.example.parabbitmq.roba.listeners.SoldProductsListener;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;

@@ -1,7 +1,7 @@
-package com.example.parabbitmq.services;
+package com.example.parabbitmq.prodaja.services;
 
-import com.example.parabbitmq.data.Order;
-import com.example.parabbitmq.repositories.OrderRepository;
+import com.example.parabbitmq.prodaja.data.Order;
+import com.example.parabbitmq.prodaja.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

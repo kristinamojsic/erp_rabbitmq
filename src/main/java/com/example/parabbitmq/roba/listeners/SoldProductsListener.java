@@ -1,9 +1,14 @@
-package com.example.parabbitmq.messaging;
+package com.example.parabbitmq.roba.listeners;
 
-import com.example.parabbitmq.data.*;
-import com.example.parabbitmq.repositories.OrderProductRepository;
-import com.example.parabbitmq.repositories.ReservationRepository;
-import com.example.parabbitmq.repositories.WarehouseRepository;
+import com.example.parabbitmq.messaging.SoldProductsMessage;
+import com.example.parabbitmq.prodaja.data.Accounting;
+import com.example.parabbitmq.prodaja.data.Invoice;
+import com.example.parabbitmq.prodaja.data.Order;
+import com.example.parabbitmq.prodaja.data.OrderProduct;
+import com.example.parabbitmq.prodaja.repositories.OrderProductRepository;
+import com.example.parabbitmq.roba.repositories.ReservationRepository;
+import com.example.parabbitmq.roba.repositories.WarehouseRepository;
+import com.example.parabbitmq.roba.data.Warehouse;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

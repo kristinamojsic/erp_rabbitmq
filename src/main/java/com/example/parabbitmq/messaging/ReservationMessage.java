@@ -3,8 +3,8 @@ package com.example.parabbitmq.messaging;
 
 //poruka koju salje modul order modulu roba
 
-import com.example.parabbitmq.data.Accounting;
-import com.example.parabbitmq.data.OrderProduct;
+import com.example.parabbitmq.prodaja.data.Accounting;
+import com.example.parabbitmq.prodaja.data.OrderProduct;
 
 import java.io.Serializable;
 import java.util.List;

@@ -1,9 +1,9 @@
-package com.example.parabbitmq.services;
+package com.example.parabbitmq.roba.services;
 
-import com.example.parabbitmq.data.ArticleWarehouse;
-import com.example.parabbitmq.data.Product;
-import com.example.parabbitmq.repositories.ArticleWarehouseRepository;
-import com.example.parabbitmq.repositories.ProductRepository;
+import com.example.parabbitmq.roba.data.ArticleWarehouse;
+import com.example.parabbitmq.roba.data.Product;
+import com.example.parabbitmq.roba.repositories.ArticleWarehouseRepository;
+import com.example.parabbitmq.roba.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

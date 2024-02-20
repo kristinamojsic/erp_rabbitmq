@@ -1,6 +1,6 @@
-package com.example.parabbitmq.repositories;
+package com.example.parabbitmq.roba.repositories;
 
-import com.example.parabbitmq.data.Product;
+import com.example.parabbitmq.roba.data.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

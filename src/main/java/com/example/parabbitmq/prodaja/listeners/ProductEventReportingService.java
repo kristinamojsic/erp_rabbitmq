@@ -1,6 +1,7 @@
-package com.example.parabbitmq.messaging;
+package com.example.parabbitmq.prodaja.listeners;
 
-import com.example.parabbitmq.data.Product;
+import com.example.parabbitmq.messaging.ProductEvent;
+import com.example.parabbitmq.roba.data.Product;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;

@@ -1,5 +1,6 @@
-package com.example.parabbitmq.data;
+package com.example.parabbitmq.prodaja.data;
 
+import com.example.parabbitmq.roba.data.Product;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 

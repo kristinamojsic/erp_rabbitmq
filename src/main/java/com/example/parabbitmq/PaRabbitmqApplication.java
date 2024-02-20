@@ -5,7 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.example.parabbitmq.repositories")
+@EnableJpaRepositories(basePackages = {"com.example.parabbitmq.prodaja.repositories", "com.example.parabbitmq.roba.repositories"})
+
 public class PaRabbitmqApplication {
 
 	public static void main(String[] args) {

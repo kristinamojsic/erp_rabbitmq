@@ -1,6 +1,6 @@
 package com.example.parabbitmq.messaging;
 
-import com.example.parabbitmq.data.Product;
+import com.example.parabbitmq.roba.data.Product;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import java.io.Serializable;

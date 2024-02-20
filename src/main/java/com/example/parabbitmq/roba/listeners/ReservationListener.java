@@ -1,11 +1,13 @@
-package com.example.parabbitmq.messaging;
+package com.example.parabbitmq.roba.listeners;
 
-import com.example.parabbitmq.data.Accounting;
-import com.example.parabbitmq.data.OrderProduct;
-import com.example.parabbitmq.data.Product;
-import com.example.parabbitmq.data.Reservation;
-import com.example.parabbitmq.repositories.ReservationRepository;
-import com.example.parabbitmq.repositories.WarehouseRepository;
+import com.example.parabbitmq.messaging.ReservationMessage;
+import com.example.parabbitmq.messaging.ReservationResponse;
+import com.example.parabbitmq.prodaja.data.Accounting;
+import com.example.parabbitmq.prodaja.data.OrderProduct;
+import com.example.parabbitmq.roba.data.Product;
+import com.example.parabbitmq.roba.data.Reservation;
+import com.example.parabbitmq.roba.repositories.ReservationRepository;
+import com.example.parabbitmq.roba.repositories.WarehouseRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,7 @@ import java.util.Optional;
 
 import static com.example.parabbitmq.RabbitMQConfigurator.ORDERS2_TOPIC_EXCHANGE_NAME;
 import static com.example.parabbitmq.RabbitMQConfigurator.RESERVATION_QUEUE;
-//modul roba
+
 @Component
 public class ReservationListener {
     @Autowired

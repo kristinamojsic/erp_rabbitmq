@@ -1,6 +1,6 @@
-package com.example.parabbitmq.repositories;
+package com.example.parabbitmq.roba.repositories;
 
-import com.example.parabbitmq.data.Warehouse;
+import com.example.parabbitmq.roba.data.Warehouse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

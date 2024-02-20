@@ -1,14 +1,14 @@
-package com.example.parabbitmq.services;
+package com.example.parabbitmq.roba.services;
 
 import com.example.parabbitmq.RabbitMQConfigurator;
-import com.example.parabbitmq.data.ArticleWarehouse;
-import com.example.parabbitmq.data.Product;
-import com.example.parabbitmq.data.Warehouse;
+import com.example.parabbitmq.roba.data.ArticleWarehouse;
+import com.example.parabbitmq.roba.data.Product;
+import com.example.parabbitmq.roba.data.Warehouse;
 import com.example.parabbitmq.messaging.ProductEvent;
-import com.example.parabbitmq.repositories.ArticleWarehouseRepository;
-import com.example.parabbitmq.repositories.ProductRepository;
-import com.example.parabbitmq.repositories.ReservationRepository;
-import com.example.parabbitmq.repositories.WarehouseRepository;
+import com.example.parabbitmq.roba.repositories.ArticleWarehouseRepository;
+import com.example.parabbitmq.roba.repositories.ProductRepository;
+import com.example.parabbitmq.roba.repositories.ReservationRepository;
+import com.example.parabbitmq.roba.repositories.WarehouseRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

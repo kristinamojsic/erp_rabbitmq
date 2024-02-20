@@ -1,6 +1,6 @@
-package com.example.parabbitmq.repositories;
+package com.example.parabbitmq.prodaja.repositories;
 
-import com.example.parabbitmq.data.Accounting;
+import com.example.parabbitmq.prodaja.data.Accounting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-
 @Repository
 public interface AccountingRepository extends JpaRepository<Accounting,Long> {
     void flush();

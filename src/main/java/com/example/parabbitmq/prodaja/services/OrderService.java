@@ -1,11 +1,19 @@
-package com.example.parabbitmq.services;
+package com.example.parabbitmq.prodaja.services;
 
 import com.example.parabbitmq.RabbitMQConfigurator;
-import com.example.parabbitmq.data.*;
 import com.example.parabbitmq.messaging.ReservationCancellation;
 import com.example.parabbitmq.messaging.ReservationMessage;
 import com.example.parabbitmq.messaging.SoldProductsMessage;
-import com.example.parabbitmq.repositories.*;
+import com.example.parabbitmq.prodaja.data.Accounting;
+import com.example.parabbitmq.prodaja.data.Invoice;
+import com.example.parabbitmq.prodaja.data.Order;
+import com.example.parabbitmq.prodaja.data.OrderProduct;
+import com.example.parabbitmq.prodaja.repositories.AccountingRepository;
+import com.example.parabbitmq.prodaja.repositories.InvoiceRepository;
+import com.example.parabbitmq.prodaja.repositories.OrderProductRepository;
+import com.example.parabbitmq.prodaja.repositories.OrderRepository;
+import com.example.parabbitmq.roba.data.Warehouse;
+import com.example.parabbitmq.roba.repositories.WarehouseRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +70,7 @@ public class OrderService {
 
     }
 
-    public Invoice addInvoice(long accountingId,double totalPrice) throws Exception {
+    public Invoice addInvoice(long accountingId, double totalPrice) throws Exception {
         Optional<Accounting> accountingOptional= accountingRepository.findById(accountingId);
         try {
             Accounting accounting = accountingOptional.get();

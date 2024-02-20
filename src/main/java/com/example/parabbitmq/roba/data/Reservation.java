@@ -1,5 +1,6 @@
-package com.example.parabbitmq.data;
+package com.example.parabbitmq.roba.data;
 
+import com.example.parabbitmq.prodaja.data.Order;
 import jakarta.persistence.*;
 
 import java.io.Serializable;

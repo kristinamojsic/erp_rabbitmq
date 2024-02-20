@@ -1,9 +1,22 @@
 package com.example.parabbitmq;
 
-import com.example.parabbitmq.data.*;
-import com.example.parabbitmq.repositories.*;
-import com.example.parabbitmq.services.OrderService;
-import com.example.parabbitmq.services.ProductService;
+import com.example.parabbitmq.prodaja.data.Accounting;
+import com.example.parabbitmq.prodaja.data.Order;
+import com.example.parabbitmq.prodaja.data.OrderProduct;
+import com.example.parabbitmq.prodaja.repositories.AccountingRepository;
+import com.example.parabbitmq.prodaja.repositories.InvoiceRepository;
+import com.example.parabbitmq.prodaja.repositories.OrderProductRepository;
+import com.example.parabbitmq.prodaja.repositories.OrderRepository;
+import com.example.parabbitmq.roba.data.ArticleWarehouse;
+import com.example.parabbitmq.roba.data.Product;
+import com.example.parabbitmq.roba.data.Reservation;
+import com.example.parabbitmq.roba.data.Warehouse;
+import com.example.parabbitmq.roba.repositories.ArticleWarehouseRepository;
+import com.example.parabbitmq.roba.repositories.ProductRepository;
+import com.example.parabbitmq.roba.repositories.ReservationRepository;
+import com.example.parabbitmq.roba.repositories.WarehouseRepository;
+import com.example.parabbitmq.prodaja.services.OrderService;
+import com.example.parabbitmq.roba.services.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

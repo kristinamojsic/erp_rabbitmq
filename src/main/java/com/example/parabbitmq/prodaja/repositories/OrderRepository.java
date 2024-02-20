@@ -1,6 +1,6 @@
-package com.example.parabbitmq.repositories;
+package com.example.parabbitmq.prodaja.repositories;
 
-import com.example.parabbitmq.data.Order;
+import com.example.parabbitmq.prodaja.data.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

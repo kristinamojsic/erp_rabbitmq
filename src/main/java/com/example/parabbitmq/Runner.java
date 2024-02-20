@@ -1,6 +1,6 @@
 package com.example.parabbitmq;
 
-import com.example.parabbitmq.messaging.ProductEventReportingService;
+import com.example.parabbitmq.prodaja.listeners.ProductEventReportingService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

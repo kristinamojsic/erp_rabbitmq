@@ -1,6 +1,6 @@
 package com.example.parabbitmq.messaging;
 
-import com.example.parabbitmq.data.Accounting;
+import com.example.parabbitmq.prodaja.data.Accounting;
 
 import java.io.Serializable;
 

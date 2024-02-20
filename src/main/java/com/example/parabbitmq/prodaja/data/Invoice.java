@@ -1,4 +1,4 @@
-package com.example.parabbitmq.data;
+package com.example.parabbitmq.prodaja.data;
 
 import jakarta.persistence.*;
 

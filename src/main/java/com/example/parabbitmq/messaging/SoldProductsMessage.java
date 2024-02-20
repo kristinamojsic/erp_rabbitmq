@@ -1,6 +1,6 @@
 package com.example.parabbitmq.messaging;
 
-import com.example.parabbitmq.data.Invoice;
+import com.example.parabbitmq.prodaja.data.Invoice;
 
 import java.io.Serializable;
 //modulu Roba da kreira jedan ili više

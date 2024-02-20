@@ -47,9 +47,10 @@ public class InitialData {
             orderRepository.save(o);
             Accounting accounting = new Accounting(o,LocalDate.now(),orderProduct.getTotalPrice()+orderProduct2.getTotalPrice());
             accountingRepository.save(accounting);
-            Invoice invoice = new Invoice(accounting,LocalDate.now());
-            invoiceRepository.save(invoice);
-
+            //Invoice invoice = new Invoice(accounting,LocalDate.now());
+            //invoiceRepository.save(invoice);
+            Reservation reservation = new Reservation(product,5,o);
+            reservationRepository.save(reservation);
             orderService.checkAccountings();
 //Informacije o
 //artiklima se na početku dobijaju iz servisa modula Roba, getAllProducts.

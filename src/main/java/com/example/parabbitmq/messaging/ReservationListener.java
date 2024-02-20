@@ -26,8 +26,7 @@ public class ReservationListener {
     RabbitTemplate rabbitTemplate;
     @RabbitListener(queues = RESERVATION_QUEUE)
     public void processReservation(ReservationMessage reservationMessage) {
-        System.out.println("Provera");
-        //List<Product> productsForReservation = new ArrayList<>();
+
         ReservationResponse response = new ReservationResponse();
         Accounting accounting = reservationMessage.getAccounting();
         boolean successful = true;

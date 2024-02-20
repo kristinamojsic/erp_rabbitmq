@@ -29,29 +29,28 @@ public class OrderService {
     private WarehouseRepository warehouseRepository;
     @Autowired
     RabbitTemplate rabbitTemplate;
-    public OrderService(OrderRepository orderRepository,OrderProductRepository orderProductRepository) {
-        this.orderRepository = orderRepository;
-        this.orderProductRepository = orderProductRepository;
+
+    public OrderService() {
     }
+
     @Transactional
-    public Order addOrder(Order order)
-    {
+    public void addOrder(Order order) {
         this.orderRepository.save(order);
         double totalPrice = 0.0;
         LocalDate dateOfPayment = LocalDate.now().plusDays(5);
         List<OrderProduct> productList = order.getProductList();
-        for(OrderProduct orderProduct : productList)
-        {
+
+
+        for(OrderProduct orderProduct : productList) {
             int count = 0;
             double purchasePrice = 0.0;
-            for(Warehouse w : warehouseRepository.findStateOfWarehousesForProductId(orderProduct.getProduct().getId()))
-            {
+            for(Warehouse w : warehouseRepository.findStateOfWarehousesForProductId(orderProduct.getProduct().getId())) {
                 ++count;
                 purchasePrice += w.getProduct().getPurchasePrice();
             }
             purchasePrice /= count;
             orderProduct.setPricePerUnit(purchasePrice+(purchasePrice*0.2));
-            orderProduct.setTotalPrice((orderProduct.getPricePerUnit()+orderProduct.getPdv()*orderProduct.getQuantity()));
+            orderProduct.setTotalPrice((orderProduct.getPricePerUnit()+orderProduct.getPdv())*orderProduct.getQuantity());
             orderProduct.setOrder(order);
             this.orderProductRepository.save(orderProduct);
             totalPrice += orderProduct.getTotalPrice();
@@ -61,14 +60,11 @@ public class OrderService {
         rabbitTemplate.convertAndSend(RabbitMQConfigurator.ORDERS_TOPIC_EXCHANGE_NAME,
                 "reservation.queue", reservationMessage);
 
-        return order;
     }
 
-    public Invoice addInvoice(long accountingId,double totalPrice) throws Exception
-    {
+    public Invoice addInvoice(long accountingId,double totalPrice) throws Exception {
         Optional<Accounting> accountingOptional= accountingRepository.findById(accountingId);
-        try
-        {
+        try {
             Accounting accounting = accountingOptional.get();
             if(accounting.getState()==1) throw new Exception("Order already paid");
             accounting.setState((short) 1);

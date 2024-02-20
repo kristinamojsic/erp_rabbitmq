@@ -72,15 +72,16 @@ public class ProductService {
     public String getProductData(long productId)
     {
         StringBuilder sb = new StringBuilder();
-        Optional<Product> product = productRepository.findById(productId);
-        sb.append("product\n").append(product.get()).append("\n");
+        Product product = productRepository.findById(productId).orElseThrow();
+        sb.append("product\n").append(product).append("\n");
 
-        //izuzeci
         //ukupno stanje
         Optional<Integer> quantity = warehouseRepository.findTotalQuantityByProductId(productId);
         Optional<Integer> reservedQuantity = reservationRepository.findTotalReservedQuantityByProductId(productId);
         int totalQauntity = reservedQuantity.isPresent() ? quantity.get() - reservedQuantity.get() : quantity.get();
         sb.append("total quantity: ").append(totalQauntity).append("\n");
+
+
         //lista nabavnih cena po dobavljacima i datumima
         List<Warehouse> warehousePurchase = warehouseRepository.findStateOfWarehousesForProductId(productId);
         for(Warehouse w : warehousePurchase)
@@ -93,12 +94,10 @@ public class ProductService {
 
     }
 
-    //Treba realizovati i servis getProductState sa šifrom artikla kao ulaznim
-    //parametrom koji vraća stanje artikla po magacinima.
-
     public String getProductState(long productId)
     {
         StringBuilder sb = new StringBuilder();
+        Product product = productRepository.findById(productId).orElseThrow();
         sb.append("Warehouse id | quantity\n");
         List<Object[]> result = warehouseRepository.findQuantityForProductIdGroupByWarehouse(productId);
         for(Object[] o : result)
@@ -107,18 +106,4 @@ public class ProductService {
         }
         return sb.toString();
     }
-    /*public Product updateProductPrice(long productId,double price) throws Exception
-    {
-        Product product = productRepository.findById(productId).get();
-
-        product.setPurchasePrice(price);
-        productRepository.save(product);
-
-        ProductEvent productEvent = ProductEvent.updatePriceOfProduct(product);
-        rabbitTemplate.convertAndSend(RabbitMQConfigurator.PRODUCTS_TOPIC_EXCHANGE_NAME,
-                "products.events.updatePrice",productEvent);
-        return product;
-    }*/
-
-
 }

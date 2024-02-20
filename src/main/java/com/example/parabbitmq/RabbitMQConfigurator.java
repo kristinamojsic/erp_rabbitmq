@@ -67,6 +67,7 @@ public class RabbitMQConfigurator{
         return new TopicExchange(SOLD_TOPIC_EXCHANGE_NAME);
     }
 //bindings
+    //"products.events.#" routing key
     @Bean
     Binding productBinding(Queue productQueue, TopicExchange productExchange) {
         return BindingBuilder.bind(productQueue).to(productExchange).with("products.events.#");

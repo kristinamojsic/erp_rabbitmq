@@ -12,11 +12,15 @@ public class Reservation implements Serializable {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
     private int quantity;
 
-    public Reservation(Product product, int quantity) {
+    public Reservation(Product product, int quantity,Order order) {
         this.product = product;
         this.quantity = quantity;
+        this.order = order;
     }
 
     public Reservation() {

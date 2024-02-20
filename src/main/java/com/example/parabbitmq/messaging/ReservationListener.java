@@ -50,7 +50,7 @@ public class ReservationListener {
         if(successful)
         {
             for(OrderProduct product : reservationMessage.getProductList()) {
-                Reservation reservation = new Reservation(product.getProduct(),product.getQuantity());
+                Reservation reservation = new Reservation(product.getProduct(),product.getQuantity(),accounting.getOrder());
                 reservationRepository.save(reservation);
             }
             response.setSuccessful(true);

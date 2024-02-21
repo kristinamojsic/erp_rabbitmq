@@ -13,10 +13,8 @@ public class Accounting implements Serializable {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
-    //java.util
     private LocalDate date;
     private double totalPrice;
-    //potvrda?
     private short state = 0;
 
     public Accounting(Order order, LocalDate date,double totalPrice) {

@@ -32,11 +32,13 @@ public class ReservationListener {
         boolean successful = true;
 
         for(OrderProduct orderProduct : reservationMessage.getProductList()) {
+
             Product product = orderProduct.getProduct();
             Optional<Integer> quantity = warehouseRepository.findTotalQuantityByProductId(product.getId());
             Optional<Integer> reservedQuantity = reservationRepository.findTotalReservedQuantityByProductId(product.getId());
             int totalQauntity = reservedQuantity.isPresent() ? quantity.get() - reservedQuantity.get() : quantity.get();
             int requestedQuantity = orderProduct.getQuantity();
+
             if(totalQauntity<requestedQuantity) {
                 successful = false;
                 response.setSuccessful(false);

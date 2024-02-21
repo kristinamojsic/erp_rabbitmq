@@ -41,21 +41,18 @@ public class SoldProductsListener {
             Optional<Long> reservationIdOptional = reservationRepository.findReservationId(orderProduct.getProduct().getId(),orderProduct.getQuantity());
             List<Warehouse> warehouseStateList = warehouseRepository.findStateOfWarehousesForProductId(orderProduct.getProduct().getId());
             int remaining = orderProduct.getQuantity();
-            if(!warehouseStateList.isEmpty())
-            {
-                for(Warehouse warehouseState : warehouseStateList)
-                {
+
+            if(!warehouseStateList.isEmpty()) {
+                for(Warehouse warehouseState : warehouseStateList) {
                     int warehouseQuantity = warehouseState.getQuantity();
                     int taken = 0;
                     if(remaining<=0) break;
                     int remainingWarehouseQuantity = warehouseQuantity - remaining;
-                    if(remainingWarehouseQuantity <= 0)
-                    {
+                    if(remainingWarehouseQuantity <= 0) {
                         taken = warehouseQuantity;
                         warehouseRepository.delete(warehouseState);
                     }
-                    else
-                    {
+                    else {
                         taken = remaining;
                         warehouseState.setQuantity(remainingWarehouseQuantity);
                         warehouseRepository.save(warehouseState);
@@ -63,12 +60,8 @@ public class SoldProductsListener {
                     remaining-=taken;
                 }
             }
-            if(reservationIdOptional.isPresent())
-            {
-                reservationRepository.deleteById(reservationIdOptional.get());
-            }
+            if(reservationIdOptional.isPresent()) reservationRepository.deleteById(reservationIdOptional.get());
         }
-
         System.out.println(sb);
     }
 }

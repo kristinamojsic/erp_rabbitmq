@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-//tabela u kojoj se cuva  datum, šifra
-//dobavljača i listu artikala koji su primljeni u neko skladište (magacin)
+
 @Entity
 public class Warehouse implements Serializable {
     @Id

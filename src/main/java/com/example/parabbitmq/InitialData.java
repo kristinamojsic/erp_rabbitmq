@@ -7,6 +7,7 @@ import com.example.parabbitmq.prodaja.repositories.AccountingRepository;
 import com.example.parabbitmq.prodaja.repositories.InvoiceRepository;
 import com.example.parabbitmq.prodaja.repositories.OrderProductRepository;
 import com.example.parabbitmq.prodaja.repositories.OrderRepository;
+import com.example.parabbitmq.prodaja.services.OrderService;
 import com.example.parabbitmq.roba.data.ArticleWarehouse;
 import com.example.parabbitmq.roba.data.Product;
 import com.example.parabbitmq.roba.data.Reservation;
@@ -15,7 +16,6 @@ import com.example.parabbitmq.roba.repositories.ArticleWarehouseRepository;
 import com.example.parabbitmq.roba.repositories.ProductRepository;
 import com.example.parabbitmq.roba.repositories.ReservationRepository;
 import com.example.parabbitmq.roba.repositories.WarehouseRepository;
-import com.example.parabbitmq.prodaja.services.OrderService;
 import com.example.parabbitmq.roba.services.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,54 +35,59 @@ public class InitialData {
     {
 
         return(args -> {
-            Product product = new Product("product1","ml");
-            Product product2 = new Product("product2","ml");
-            productRepository.save(product);
-            productRepository.save(product2);
-           // double pricePerUnit = product.getPurchasePrice()*1.2;
-            ArticleWarehouse articleWarehouse = new ArticleWarehouse(product,35.5);
-            ArticleWarehouse articleWarehouse1 = new ArticleWarehouse(product2,35.5);
-            articleWarehouseRepository.save(articleWarehouse);
-            articleWarehouseRepository.save(articleWarehouse1);
-            Warehouse warehouse = new Warehouse(1,1,articleWarehouse,5);
-            Warehouse warehouse1 = new Warehouse(1,1,articleWarehouse1,5);
-            warehouseRepository.save(warehouse);
-            warehouseRepository.save(warehouse1);
-            OrderProduct orderProduct = new OrderProduct(product,35.0,0.4,5,5*(35.0+0.4));
-            //double pricePerUnit2 = product2.getPurchasePrice()*1.2;
-            OrderProduct orderProduct2 = new OrderProduct(product2,35.0,0.4,4,4*(35.0+0.4));
+            List<Product> productList = new ArrayList<>();
+            productList.add(new Product("product1","ml"));
+            productList.add(new Product("product2","ml"));
+            productList.add(new Product("product3","g"));
+            productList.add(new Product("product4","g"));
+            for(Product product:productList) {
+                productRepository.save(product);
+            }
+            List<ArticleWarehouse> articleWarehouseList = new ArrayList<>();
+            for(int i = 0; i < productList.size(); i++){
+                articleWarehouseList.add(new ArticleWarehouse(productList.get(i),30.0+i*10));
+                articleWarehouseRepository.save(articleWarehouseList.get(i));
+            }
+            List<Warehouse> warehouses = new ArrayList<>();
+            LocalDate date = LocalDate.now();
+            for(int i = 1; i<3 ; i++) {
+                for(int j = 0; j < articleWarehouseList.size(); j++) {
+                    warehouses.add(new Warehouse(i, articleWarehouseList.get(j), 5 + i + j, 1, date));
+                    warehouseRepository.save(warehouses.get(j));
+                }
+            }
+
+            OrderProduct orderProduct = new OrderProduct(productList.get(0),articleWarehouseList.get(0).getPurchasePrice()*1.2,0.4,5);
+            OrderProduct orderProduct2 = new OrderProduct(productList.get(1),articleWarehouseList.get(1).getPurchasePrice()*1.2,0.4,5);
             orderProductRepository.save(orderProduct);
             orderProductRepository.save(orderProduct2);
-            List<OrderProduct> productList = new ArrayList<>();
-            productList.add(orderProduct);
-            productList.add(orderProduct2);
-            Order o = new Order(1,1,"kristina",productList);
+            List<OrderProduct> orderProductList = new ArrayList<>();
+            orderProductList.add(orderProduct);
+            orderProductList.add(orderProduct2);
+            Order o = new Order(1,1,"kristina",orderProductList);
             orderRepository.save(o);
+            for(OrderProduct op : orderProductList){
+                op.setOrder(o);
+                orderProductRepository.save(op);
+            }
+
             Accounting accounting = new Accounting(o,LocalDate.now(),orderProduct.getTotalPrice()+orderProduct2.getTotalPrice());
             accountingRepository.save(accounting);
             //Invoice invoice = new Invoice(accounting,LocalDate.now());
             //invoiceRepository.save(invoice);
-            Reservation reservation = new Reservation(product,5,o);
+            Reservation reservation = new Reservation(productList.get(0),5,o);
             reservationRepository.save(reservation);
-            orderService.checkAccountings();
-//Informacije o
-//artiklima se na početku dobijaju iz servisa modula Roba, getAllProducts.
-            /*log.info("Svi artikli");
+            Reservation reservation2 = new Reservation(productList.get(1),5,o);
+            reservationRepository.save(reservation2);
+
             StringBuilder sb = new StringBuilder();
             sb.append("All products:\n");
             List<Product> products = productService.getAllProducts();
-            for(Product p : products)
-            {
-                sb.append(" ");
-                sb.append(p);
+            for(Product p : products) {
+                sb.append(" ").append(p);
             }
-            log.info(sb.toString());*/
-            /*log.info("rezervacije za neki proizvod");
-            Optional<Integer> quantity = reservationRepository.findTotalReservedQuantityByProductId((long) 1);
-            log.info(String.valueOf(quantity));
-            log.info(String.valueOf(quantity.get()));
-*/
-
+            log.info(sb.toString());
+            orderService.checkAccountings();
         });
     }
 }

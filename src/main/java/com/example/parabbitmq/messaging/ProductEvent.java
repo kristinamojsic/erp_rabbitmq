@@ -58,13 +58,11 @@ public class ProductEvent implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ProductEvent{").append("eventType=").append(eventType).append("Product:\n");
-        if(productList.size()!=0)
-        {
+        if(productList.size()!=0) {
             productList.forEach(p -> sb.append(p).append(" "));
         }
 
         if(product!=null) sb.append(product);
-
         return sb.toString();
     }
 }

@@ -15,7 +15,6 @@ public class Order implements Serializable {
     private long id;
     private long customerId;
     private String customerName;
-    //@Nullable
     @JsonManagedReference
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderProduct> productList;

@@ -25,9 +25,7 @@ public class RabbitMQConfigurator{
     public static final String PRODUCTS_TOPIC_EXCHANGE_NAME = "products-events-exchange";
     //za rutiranje od prodaje ka robi
     public static final String ORDERS_TOPIC_EXCHANGE_NAME = "orders-events-exchange";
-    //public static final String ORDERS2_TOPIC_EXCHANGE_NAME = "orders2-events-exchange";
-    //public static final String SOLD_TOPIC_EXCHANGE_NAME = "sold-events-exchange";
-    //public static final String CANCELRESERVATION_TOPIC_EXCHANGE_NAME = "cancel-reservation-exchange";
+
     public static final String PRODUCTS_SERVICE_QUEUE = "products-service-queue";
     public static final String RESERVATION_QUEUE = "reservation-queue";
     public static final String RESERVATION_RESPONSE_QUEUE = "reservation-response-queue";
@@ -65,20 +63,9 @@ public class RabbitMQConfigurator{
     TopicExchange ordersExchange() {
         return new TopicExchange(ORDERS_TOPIC_EXCHANGE_NAME);
     }
-   /* @Bean
-    TopicExchange orders2Exchange() {
-        return new TopicExchange(ORDERS2_TOPIC_EXCHANGE_NAME);
-    }
-    @Bean
-    TopicExchange soldProductsExchange() {
-        return new TopicExchange(SOLD_TOPIC_EXCHANGE_NAME);
-    }
-    @Bean
-    TopicExchange cancelReservationExchange() {
-        return new TopicExchange(CANCELRESERVATION_TOPIC_EXCHANGE_NAME);
-    }*/
+
 //bindings
-    //"products.events.#" routing key
+
     @Bean
     Binding productBinding(Queue productQueue, TopicExchange productExchange) {
         return BindingBuilder.bind(productQueue).to(productExchange).with("products.events.#");

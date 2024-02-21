@@ -43,11 +43,11 @@ public class OrderService {
 
     @Transactional
     public void addOrder(Order order) {
+
         this.orderRepository.save(order);
         double totalPrice = 0.0;
         LocalDate dateOfPayment = LocalDate.now().plusDays(5);
         List<OrderProduct> productList = order.getProductList();
-
 
         for(OrderProduct orderProduct : productList) {
             int count = 0;
@@ -57,7 +57,7 @@ public class OrderService {
                 purchasePrice += w.getProduct().getPurchasePrice();
             }
             purchasePrice /= count;
-            orderProduct.setPricePerUnit(purchasePrice+(purchasePrice*0.2));
+            orderProduct.setPricePerUnit(purchasePrice*1.2);
             orderProduct.setTotalPrice((orderProduct.getPricePerUnit()+orderProduct.getPdv())*orderProduct.getQuantity());
             orderProduct.setOrder(order);
             this.orderProductRepository.save(orderProduct);
@@ -77,10 +77,11 @@ public class OrderService {
             if(accounting.getState()==1) throw new Exception("Order already paid");
             accounting.setState((short) 1);
             accountingRepository.save(accounting);
+
             LocalDate payDate = LocalDate.now();
             Invoice invoice = new Invoice(accounting,payDate);
             invoiceRepository.save(invoice);
-            //poslati poruku prodata roba
+
             SoldProductsMessage soldProductsMessage = new SoldProductsMessage(invoice.getAccounting().getOrder().getId());
             rabbitTemplate.convertAndSend(RabbitMQConfigurator.ORDERS_TOPIC_EXCHANGE_NAME,
                     "soldproducts.queue",soldProductsMessage);

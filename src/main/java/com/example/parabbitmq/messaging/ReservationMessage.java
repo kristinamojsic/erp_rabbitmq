@@ -1,8 +1,4 @@
 package com.example.parabbitmq.messaging;
-
-
-//poruka koju salje modul order modulu roba
-
 import com.example.parabbitmq.prodaja.data.Accounting;
 import com.example.parabbitmq.prodaja.data.OrderProduct;
 

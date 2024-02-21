@@ -16,7 +16,7 @@ public class CancelReservationListener {
 
     public void cancelReservation(ReservationCancellation reservationCancellation) {
 
-        System.out.println("Modul <ROBA> dobija poruku o ponistavanju rezervacije za narudzbinu" + reservationCancellation.getOrderId());
+        System.out.println("Modul <ROBA> dobija poruku o ponistavanju rezervacije za narudzbinu " + reservationCancellation.getOrderId());
 
         List<Reservation> reservationList = reservationRepository.findReservationsByOrderId(reservationCancellation.getOrderId());
         if(!reservationList.isEmpty()){

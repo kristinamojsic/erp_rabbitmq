@@ -22,10 +22,7 @@ public class OrderProduct implements Serializable {
     private double pricePerUnit;
     private double pdv;
     private double totalPrice;
-    //preko konstruktora
     private int quantity;
-
-
 
     public OrderProduct(long id, Product product, double pricePerUnit, double pdv, int quantity, double totalPrice) {
         this.id = id;
@@ -42,11 +39,18 @@ public class OrderProduct implements Serializable {
         this.pdv = pdv;
         this.quantity = quantity;
         this.pricePerUnit = 35.5;
-        //this.pricePerUnit = product.getPurchasePrice()*1.2;
         this.totalPrice = (pricePerUnit + pdv) * quantity;
     }
 
     public OrderProduct() {
+    }
+
+    public OrderProduct(Product product, double pricePerUnit, double pdv, int quantity) {
+        this.product = product;
+        this.pricePerUnit = pricePerUnit;
+        this.pdv = pdv;
+        this.quantity = quantity;
+        this.totalPrice = quantity * (pricePerUnit + pdv);
     }
 
     public OrderProduct(Product product, double pdv, double pricePerUnit, int quantity, double totalPrice) {

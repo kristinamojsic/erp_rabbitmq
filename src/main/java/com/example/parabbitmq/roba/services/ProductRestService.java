@@ -56,13 +56,15 @@ public class ProductRestService {
             int warehouseId = (int) requestBody.get("warehouseId");
             int quantity = (int) requestBody.get("quantity");
             List<Map<String, Object>> articleList = (List<Map<String, Object>>) requestBody.get("articles");
-
             List<ArticleWarehouse> articles = new ArrayList<>();
+
             for (Map<String, Object> articleMap : articleList) {
+
                 Map<String, Object> productMap = (Map<String, Object>) articleMap.get("product");
                 long productId = ((Number) productMap.get("id")).longValue();
                 Product product = productRepository.findById(productId).orElseThrow();
                 double purchasePrice = ((Number) articleMap.get("purchasePrice")).doubleValue();
+
                 Optional<ArticleWarehouse> articleWarehouse = articleWarehouseRepository.findArticleWarehouse(product, purchasePrice);
                 if (articleWarehouse.isEmpty()) {
                     ArticleWarehouse articleWarehouse1 = new ArticleWarehouse(product, purchasePrice);
@@ -75,6 +77,7 @@ public class ProductRestService {
 
             productService.receptionOfProducts(supplierId, warehouseId, quantity, articles);
             return ResponseEntity.ok("Products successfully added to warehouse");
+
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding products: " + e.getMessage() + " no product with id");
         }

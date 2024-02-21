@@ -15,7 +15,6 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct,Long>
 
     OrderProduct save(OrderProduct entity);
 
-    //naci sve proizvode jedne porudzbine
     @Query("SELECT op FROM OrderProduct op WHERE op.order.id=:orderId")
     List<OrderProduct> findOrderProducts(@Param ("orderId") long orderId);
 }

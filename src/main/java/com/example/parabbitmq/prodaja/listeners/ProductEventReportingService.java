@@ -11,8 +11,8 @@ import static com.example.parabbitmq.messaging.ProductEvent.EventType.NEW_PRODUC
 @Component
 public class ProductEventReportingService implements Serializable {
     public void receiveMessage(ProductEvent event) {
-        System.out.println("Modul <PRODAJA> dobija poruku:");
 
+        System.out.println("Modul <PRODAJA> dobija poruku:");
         if(event.getEventType().equals(NEW_PRODUCT)) {
             System.out.println("New event: <" + event.getEventType() + "> on product with id = "+event.getProduct().getId());
         } else {

@@ -82,7 +82,7 @@ public class OrderService {
             invoiceRepository.save(invoice);
             //poslati poruku prodata roba
             SoldProductsMessage soldProductsMessage = new SoldProductsMessage(invoice);
-            rabbitTemplate.convertAndSend(RabbitMQConfigurator.SOLD_TOPIC_EXCHANGE_NAME,
+            rabbitTemplate.convertAndSend(RabbitMQConfigurator.ORDERS_TOPIC_EXCHANGE_NAME,
                     "soldproducts.queue",soldProductsMessage);
             return invoice;
         }catch(Exception e) {
@@ -100,7 +100,7 @@ public class OrderService {
                 accountingRepository.save(accounting);
                 long orderId = accounting.getOrder().getId();
                 ReservationCancellation reservationCancellation = new ReservationCancellation(orderId);
-                rabbitTemplate.convertAndSend(RabbitMQConfigurator.CANCELRESERVATION_TOPIC_EXCHANGE_NAME,
+                rabbitTemplate.convertAndSend(RabbitMQConfigurator.ORDERS_TOPIC_EXCHANGE_NAME,
                         "cancelreservation.queue",reservationCancellation);
 
             }

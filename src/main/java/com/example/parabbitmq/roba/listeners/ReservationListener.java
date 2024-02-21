@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static com.example.parabbitmq.RabbitMQConfigurator.ORDERS2_TOPIC_EXCHANGE_NAME;
+import static com.example.parabbitmq.RabbitMQConfigurator.PRODUCTS_TOPIC_EXCHANGE_NAME;
 import static com.example.parabbitmq.RabbitMQConfigurator.RESERVATION_QUEUE;
 
 @Component
@@ -44,7 +44,7 @@ public class ReservationListener {
                 successful = false;
                 response.setSuccessful(false);
                 response.setMessage("Nemoguca rezervacija proizvoda sa id-em " + product.getId());
-                rabbitTemplate.convertAndSend(ORDERS2_TOPIC_EXCHANGE_NAME,
+                rabbitTemplate.convertAndSend(PRODUCTS_TOPIC_EXCHANGE_NAME,
                         "reservation.response.queue", response);
             }
         }
@@ -57,7 +57,7 @@ public class ReservationListener {
             response.setSuccessful(true);
             response.setMessage("Uspesna rezervacija");
             response.setAccounting(accounting);
-            rabbitTemplate.convertAndSend(ORDERS2_TOPIC_EXCHANGE_NAME,
+            rabbitTemplate.convertAndSend(PRODUCTS_TOPIC_EXCHANGE_NAME,
                     "reservation.response.queue", response);
         }
     }

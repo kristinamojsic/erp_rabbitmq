@@ -21,18 +21,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfigurator{
+    //za rutiranje od robe ka prodaji
     public static final String PRODUCTS_TOPIC_EXCHANGE_NAME = "products-events-exchange";
+    //za rutiranje od prodaje ka robi
     public static final String ORDERS_TOPIC_EXCHANGE_NAME = "orders-events-exchange";
-    public static final String ORDERS2_TOPIC_EXCHANGE_NAME = "orders2-events-exchange";
-    public static final String SOLD_TOPIC_EXCHANGE_NAME = "sold-events-exchange";
-    public static final String CANCELRESERVATION_TOPIC_EXCHANGE_NAME = "cancel-reservation-exchange";
+    //public static final String ORDERS2_TOPIC_EXCHANGE_NAME = "orders2-events-exchange";
+    //public static final String SOLD_TOPIC_EXCHANGE_NAME = "sold-events-exchange";
+    //public static final String CANCELRESERVATION_TOPIC_EXCHANGE_NAME = "cancel-reservation-exchange";
     public static final String PRODUCTS_SERVICE_QUEUE = "products-service-queue";
     public static final String RESERVATION_QUEUE = "reservation-queue";
     public static final String RESERVATION_RESPONSE_QUEUE = "reservation-response-queue";
     public static final String CANCEL_RESERVATION_QUEUE = "cancelreservation-queue";
     public static final String SOLDPRODUCTS_SERVICE_QUEUE = "soldproducts-service-queue";
-//poruka ponistavanje rezervacije - od modula prodaja ka robi
-    //poruka prodata roba - od modula prodaja ka robi
 
 
 //queues
@@ -65,7 +65,7 @@ public class RabbitMQConfigurator{
     TopicExchange ordersExchange() {
         return new TopicExchange(ORDERS_TOPIC_EXCHANGE_NAME);
     }
-    @Bean
+   /* @Bean
     TopicExchange orders2Exchange() {
         return new TopicExchange(ORDERS2_TOPIC_EXCHANGE_NAME);
     }
@@ -76,7 +76,7 @@ public class RabbitMQConfigurator{
     @Bean
     TopicExchange cancelReservationExchange() {
         return new TopicExchange(CANCELRESERVATION_TOPIC_EXCHANGE_NAME);
-    }
+    }*/
 //bindings
     //"products.events.#" routing key
     @Bean
@@ -89,17 +89,17 @@ public class RabbitMQConfigurator{
     }
 
     @Bean
-    Binding reservationResponseBinding(Queue reservationResponseQueue, TopicExchange orders2Exchange) {
-        return BindingBuilder.bind(reservationResponseQueue).to(orders2Exchange).with("reservation.response.#");
+    Binding reservationResponseBinding(Queue reservationResponseQueue, TopicExchange productExchange) {
+        return BindingBuilder.bind(reservationResponseQueue).to(productExchange).with("reservation.response.#");
     }
 
     @Bean
-    Binding soldProductsBinding(Queue soldProductsQueue, TopicExchange soldProductsExchange) {
-        return BindingBuilder.bind(soldProductsQueue).to(soldProductsExchange).with("soldproducts.#");
+    Binding soldProductsBinding(Queue soldProductsQueue, TopicExchange ordersExchange) {
+        return BindingBuilder.bind(soldProductsQueue).to(ordersExchange).with("soldproducts.#");
     }
     @Bean
-    Binding cancelReservationBinding(Queue cancelReservationQueue, TopicExchange cancelReservationExchange) {
-        return BindingBuilder.bind(cancelReservationQueue).to(cancelReservationExchange).with("cancelreservation.#");
+    Binding cancelReservationBinding(Queue cancelReservationQueue, TopicExchange ordersExchange) {
+        return BindingBuilder.bind(cancelReservationQueue).to(ordersExchange).with("cancelreservation.#");
     }
 //containers
     @Bean

@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 public class ReservationResponseListener {
     @Autowired
     AccountingRepository accountingRepository;
-    //@RabbitListener(queues = RESERVATION_RESPONSE_QUEUE)
+
     public void processReservationResponse(ReservationResponse reservationResponse)
     {
         if(reservationResponse.isSuccessful()) {
             accountingRepository.save(reservationResponse.getAccounting());
-            System.out.println(reservationResponse.getMessage());
+            System.out.println("Modul <PRODAJA> dobija poruku" + reservationResponse.getMessage());
         }
         else {
             System.out.println(reservationResponse.getMessage());

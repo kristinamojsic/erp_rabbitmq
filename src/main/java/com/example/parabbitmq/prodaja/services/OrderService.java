@@ -81,7 +81,7 @@ public class OrderService {
             Invoice invoice = new Invoice(accounting,payDate);
             invoiceRepository.save(invoice);
             //poslati poruku prodata roba
-            SoldProductsMessage soldProductsMessage = new SoldProductsMessage(invoice);
+            SoldProductsMessage soldProductsMessage = new SoldProductsMessage(invoice.getAccounting().getOrder().getId());
             rabbitTemplate.convertAndSend(RabbitMQConfigurator.ORDERS_TOPIC_EXCHANGE_NAME,
                     "soldproducts.queue",soldProductsMessage);
             return invoice;

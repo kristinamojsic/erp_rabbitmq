@@ -1,14 +1,11 @@
 package com.example.parabbitmq.roba.listeners;
 
 import com.example.parabbitmq.messaging.SoldProductsMessage;
-import com.example.parabbitmq.prodaja.data.Accounting;
-import com.example.parabbitmq.prodaja.data.Invoice;
-import com.example.parabbitmq.prodaja.data.Order;
 import com.example.parabbitmq.prodaja.data.OrderProduct;
 import com.example.parabbitmq.prodaja.repositories.OrderProductRepository;
+import com.example.parabbitmq.roba.data.Warehouse;
 import com.example.parabbitmq.roba.repositories.ReservationRepository;
 import com.example.parabbitmq.roba.repositories.WarehouseRepository;
-import com.example.parabbitmq.roba.data.Warehouse;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,15 +26,11 @@ public class SoldProductsListener {
     @RabbitListener(queues = SOLDPRODUCTS_SERVICE_QUEUE)
     private void processSoldProductsMessage(SoldProductsMessage soldProductsMessage)
     {
-        Invoice invoice = soldProductsMessage.getInvoice();
-        Accounting accounting = invoice.getAccounting();
-        Order order = accounting.getOrder();
         StringBuilder sb = new StringBuilder();
-        sb.append("Iz modula roba: " + "prodali su se proizvodi\n");
+        sb.append("Modul <ROBA> dobija poruku da su se prodali proizvodi\n");
 
-        List<OrderProduct> orderProducts = orderProductRepository.findOrderProducts(order.getId());
-        for(OrderProduct orderProduct : orderProducts)
-        {
+        List<OrderProduct> orderProducts = orderProductRepository.findOrderProducts(soldProductsMessage.getOrderId());
+        for(OrderProduct orderProduct : orderProducts) {
             sb.append(orderProduct.getProduct().getId()).append(" u kolicini:")
                     .append(orderProduct.getQuantity());
         }
